@@ -1,26 +1,70 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Loader v-if="$store.getters.isAppLoading" />
+  <TitleBar />
+  <Content />
+  <Footer />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Loader from './components/Loader.vue';
+import TitleBar from './components/TitleBar.vue';
+import Content from './components/Content.vue';
+import Footer from './components/Footer.vue';
+
+import { login } from './javascript/discord';
+import setupSettings from './javascript/settings';
+import { clearLogs } from './javascript/logger';
+import { remote } from 'electron';
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
-  }
-}
+    Loader,
+    TitleBar,
+    Content,
+    Footer,
+  },
+
+  async mounted() {
+    // Clear logs file because new launch (or reload)
+    await clearLogs();
+
+    // Settings
+    await setupSettings();
+
+    if (!navigator.onLine) {
+      remote.dialog.showMessageBoxSync({
+        type: 'error',
+        title: 'No Internet Connection',
+        message:
+          'You are not connected to the internet. Please connect and try again.',
+        buttons: ['OK'],
+        defaultId: 0,
+      });
+      remote.app.quit();
+    }
+
+    // Discord RPC
+    await login();
+  },
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+* {
+  user-select: none;
+  -webkit-user-select: none;
+  padding: 0;
+  margin: 0;
+  font-family: Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #181818;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 </style>

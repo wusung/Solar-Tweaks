@@ -1,15 +1,27 @@
 {
-  "name": "solartweaks2",
-  "version": "0.1.0",
-  "private": true,
+  "name": "solartweaks",
+  "version": "4.0.0-dev",
+  "author": "RichardDorian",
+  "license": "GPL-3.0",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build": "vue-cli-service electron:build",
+    "serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
   },
+  "main": "background.js",
   "dependencies": {
+    "axios": "^0.24.0",
+    "bufferutil": "^4.0.5",
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "discord-rpc": "^4.0.1",
+    "electron-settings": "^4.0.2",
+    "extract-zip": "^2.0.1",
+    "node-machine-id": "^1.1.12",
+    "utf-8-validate": "^5.0.7",
+    "vue": "^3.0.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -17,8 +29,11 @@
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
+    "electron": "^13.0.0",
+    "electron-devtools-installer": "^3.1.0",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "vue-cli-plugin-electron-builder": "~2.1.1"
   },
   "eslintConfig": {
     "root": true,
@@ -32,7 +47,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-async-promise-executor": "off"
+    }
   },
   "browserslist": [
     "> 1%",
