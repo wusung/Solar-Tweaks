@@ -6,6 +6,7 @@ import extractZip from 'extract-zip';
 import axios from 'axios';
 import { platform, arch } from 'os';
 import { join } from 'path';
+import { stat } from 'fs/promises';
 import { remote } from 'electron';
 import settings from 'electron-settings';
 import { updateActivity } from './discord';
@@ -443,15 +444,20 @@ export async function getJavaArguments(
   ).path;
 
   const resolution = await settings.get('resolution');
+  const patcherPath = join(
+    dotLunarClient,
+    'solartweaks',
+    'solar-patcher.jar'
+  )
+
+  // Make sure the patcher exists, or else the game will crash (jvm init error)
+  stat(patcherPath)
+    .then(() => args.push(`-javaagent:"${patcherPath}"="${join(dotLunarClient, 'solartweaks', 'config.json')}"`))
+    .catch(e => logger.warn(`Launching the game without patcher; ${patcherPath} does not exist! ${e}`))
 
   args.push(
     await settings.get('jvmArguments'),
     `-Xmx${await settings.get('ram')}m`,
-    `-javaagent:"${join(
-      dotLunarClient,
-      'solartweaks',
-      'solar-patcher.jar'
-    )}"="${join(dotLunarClient, 'solartweaks', 'config.json')}"`,
     `-Djava.library.path="${natives}"`,
     `-cp ${await lunarJarFile(
       'lunar-assets-prod-1-optifine.jar'

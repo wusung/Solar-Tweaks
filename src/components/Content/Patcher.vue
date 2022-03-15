@@ -87,7 +87,7 @@ export default {
         enabled: false,
       },
       {
-        name: 'Remove pinned servers',
+        name: 'Remove Pinned Servers',
         icon: 'pinned_servers.png',
         internal: 'metadata',
         call: 'pinnedServers',
@@ -98,7 +98,7 @@ export default {
         icon: 'hypixel.png',
         internal: 'levelHead',
         values: {
-          to: 'Level: ',
+          to: 'Level',
         },
         enabled: false,
       },
@@ -121,28 +121,19 @@ export default {
         enabled: false,
       },
       {
-        name: 'Keystrokes CPS',
-        icon: 'keystrokes.png',
-        internal: 'keystrokesCPS',
-        values: {
-          to: 'CPS',
-        },
-        enabled: false,
-      },
-      {
-        name: 'Remove hit delay',
+        name: 'Remove Hit Delay',
         icon: 'hit_delay.png',
         internal: 'noHitDelay',
         enabled: false,
       },
       {
-        name: 'Mantle integration',
+        name: 'Mantle Integration',
         icon: 'mantle.png',
         internal: 'mantleIntegration',
         enabled: false,
       },
       {
-        name: 'Window name',
+        name: 'Window Title',
         icon: 'window.png',
         internal: 'windowName',
         values: {
@@ -151,13 +142,13 @@ export default {
         enabled: false,
       },
       {
-        name: 'Remove mods packet',
+        name: 'Remove Mods Packet',
         icon: 'cog.png',
         internal: 'modpacketRemoval',
         enabled: false,
       },
       {
-        name: 'Reach text',
+        name: 'Reach Text',
         icon: 'hit_delay.png',
         internal: 'reachText',
         values: {
@@ -169,14 +160,13 @@ export default {
         name: 'Auto GG',
         icon: 'hypixel.png',
         internal: 'autoGG',
-
         values: {
           to: '/achat gg',
         },
         enabled: false,
       },
       {
-        name: 'Remove blog posts',
+        name: 'Remove Blog Posts',
         icon: 'blogpost.png',
         internal: 'metadata',
         call: 'blogPosts',
@@ -198,7 +188,7 @@ export default {
         enabled: false,
       },
       {
-        name: 'Nick hider',
+        name: 'Nick Hider',
         icon: 'nick_hider.png',
         internal: 'nickhider',
         values: {
@@ -276,7 +266,7 @@ export default {
         enabled: true,
       },
       {
-        name: 'Options in singleplayer',
+        name: 'Options in Singleplayer',
         icon: 'cog.png',
         internal: 'lunarOptions',
         enabled: false,

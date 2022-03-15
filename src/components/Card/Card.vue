@@ -50,6 +50,8 @@ export default {
 
 .card-title-container {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-icon {
