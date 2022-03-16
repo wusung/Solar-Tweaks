@@ -72,7 +72,6 @@ export default {
   height: 10px;
   background-color: #171717;
   border: none;
-  color: #f7f7f7;
   outline: none;
   padding: 8px;
   margin: 10px;
@@ -89,7 +88,6 @@ select {
   outline: none;
   height: 30px;
   appearance: none;
-  color: #f7f7f7;
   background-color: #171717;
 }
 
@@ -119,7 +117,6 @@ select {
   transform: translate(calc(50vw - 50%), calc(50vh - 50%));
   border-radius: 15px;
   justify-content: center;
-  color: #f7f7f7;
 }
 
 #shortcut-form-title {
@@ -141,7 +138,6 @@ select {
   box-shadow: 0 0 0 2px #2b2b2b;
   border-radius: 3px;
   transition: background-color 0.5s ease-out;
-  color: #f7f7f7;
   font-size: 18px;
   cursor: pointer;
 }

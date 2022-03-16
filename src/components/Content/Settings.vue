@@ -6,39 +6,41 @@
       subtitle="CUSTOMIZE LAUNCHER BEHAVIOR"
       background="settings-1"
       class="settings-card"
+      contentClass="horizontal-card-container"
     >
-      <div class="card-item-separator-vertical"></div>
-      <CardItem
-        icon="fa-regular fa-folder-open"
-        title="Launch Directories"
-        subtitle="Select which directory to launch Minecraft from"
-        class="settings-card-item"
-      >
-        <div id="settings-directories">
-          <div
-            class="settings-directories-item"
-            v-for="directory in directories"
-            v-bind:key="directory.version"
-          >
-            <span class="settings-directories-item-version">{{
-              directory.version.length === 3
-                ? '⠀' + directory.version
-                : directory.version
-            }}</span>
-            <input
-              type="text"
-              class="input"
-              v-model="directory.path"
-              @click="setNewDirectory(directory.version)"
-            />
+      <div class="settings-card-item settings-card-item-container" id="dirs-container">
+        <CardItem
+          icon="fa-regular fa-folder-open"
+          title="Launch Directories"
+          subtitle="Select which directory to launch Minecraft from"
+          class="directories-card-item"
+          contentClass="directories-card-item-content"
+        >
+          <div id="settings-directories">
+            <div
+              class="settings-directories-item"
+              v-for="directory in directories"
+              v-bind:key="directory.version"
+            >
+              <span class="settings-directories-item-version">{{
+                directory.version.length === 3
+                  ? "⠀" + directory.version
+                  : directory.version
+              }}</span>
+              <input
+                type="text"
+                class="input settings-directories-input"
+                v-model="directory.path"
+                @click="setNewDirectory(directory.version)"
+              />
+            </div>
+            <button class="button" @click="resetLaunchDirectories()">
+              <i class="fa-solid fa-arrow-rotate-right button-icon"></i>
+              <span class="button-text">Reset to default</span>
+            </button>
           </div>
-          <button class="button" @click="resetLaunchDirectories()">
-            <i class="fa-solid fa-arrow-rotate-right button-icon"></i>
-            <span class="button-text">Reset to default</span>
-          </button>
-        </div>
-      </CardItem>
-      <div class="card-item-separator-vertical"></div>
+        </CardItem>
+      </div>
       <div class="settings-card-item settings-card-item-container">
         <CardItem
           icon="fa-solid fa-sliders"
@@ -69,7 +71,6 @@
             </div>
           </div>
         </CardItem>
-        <div class="card-item-separator-horizontal"></div>
         <CardItem
           icon="fa-solid fa-compress"
           title="Resolution"
@@ -107,7 +108,6 @@
           </div>
         </CardItem>
       </div>
-      <div class="card-item-separator-vertical"></div>
       <div class="settings-card-item settings-card-item-container">
         <CardItem
           icon="fa-solid fa-angles-left"
@@ -129,7 +129,6 @@
             </div>
           </div>
         </CardItem>
-        <div class="card-item-separator-horizontal"></div>
         <CardItem
           icon="fa-solid fa-circle-play"
           title="After Launch"
@@ -160,8 +159,8 @@
       subtitle="JAVA & JRE PREFERENCES"
       background="settings-2"
       class="settings-card"
+      contentClass="horizontal-card-container"
     >
-      <div class="card-item-separator-vertical"></div>
       <CardItem
         icon="fa-brands fa-java"
         title="JVM Arguments"
@@ -205,13 +204,13 @@
           </div>
         </div>
       </CardItem>
-      <div class="card-item-separator-vertical"></div>
       <div class="settings-card-item settings-card-item-container">
         <CardItem
           icon="fa-solid fa-desktop"
           title="Java Executable"
           subtitle="Set a custom JRE and whether or not to show the console when running the game"
           class="settings-card-little"
+          id="jre-settings"
         >
           <div id="settings-jre-path">
             <input
@@ -241,7 +240,6 @@
           </div>
         </CardItem>
       </div>
-      <div class="card-item-separator-vertical"></div>
       <CardItem
         icon="fa-solid fa-file-zipper"
         title="JRE Downloader"
@@ -301,26 +299,26 @@
 </template>
 
 <script>
-import Card from '../Card/Card.vue';
-import CardItem from '../Card/CardItem.vue';
+import Card from "../Card/Card.vue";
+import CardItem from "../Card/CardItem.vue";
 
-import { remote } from 'electron';
-import settings from 'electron-settings';
-import { totalmem, platform } from 'os';
-import { join } from 'path';
-import { defaultSettings } from '../../javascript/settings';
-import axios from 'axios';
-import { cache } from '../../main';
+import { remote } from "electron";
+import settings from "electron-settings";
+import { totalmem, platform } from "os";
+import { join } from "path";
+import { defaultSettings } from "../../javascript/settings";
+import axios from "axios";
+import { cache } from "../../main";
 import {
   downloadJre as _downloadJre,
   removeJre as _removeJre,
-} from '../../javascript/jreDownloader';
-import Logger from '../../javascript/logger';
-import constants from '../../constants';
-const logger = new Logger('settings');
+} from "../../javascript/jreDownloader";
+import Logger from "../../javascript/logger";
+import constants from "../../constants";
+const logger = new Logger("settings");
 
 export default {
-  name: 'Settings',
+  name: "Settings",
 
   components: {
     Card,
@@ -339,32 +337,35 @@ export default {
       height: 480,
     },
     actions: [
-      { name: 'Close Launcher', id: 'close' },
-      { name: 'Hide Launcher', id: 'hide' },
-      { name: 'Keep Launcher Open', id: 'keep' },
+      { name: "Close Launcher", id: "close" },
+      { name: "Hide Launcher", id: "hide" },
+      { name: "Keep Launcher Open", id: "keep" },
     ],
-    actionAfterLaunch: 'close',
-    jvmArguments: '',
+    actionAfterLaunch: "close",
+    jvmArguments: "",
     jvmArgumentsPresetsVisible: false,
     jvmArgumentsPresets: [
       {
-        name: 'Default',
-        args: '-Xms1G -Xmx1G -Xmn768m -XX:+DisableAttachMechanism',
+        name: "Default",
+        args: "-Xms1G -Xmx1G -Xmn768m -XX:+DisableAttachMechanism",
       },
       {
-        name: 'Zulu optimized 1',
-        args: '-Xms3G -Xmx3G -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
+        name: "Zulu optimized 1",
+        args:
+          "-Xms3G -Xmx3G -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
       },
       {
-        name: 'Zulu optimized 2',
-        args: '-XX:+UseG1GC -Xmx3G -Xms3G -Xmn1G -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
+        name: "Zulu optimized 2",
+        args:
+          "-XX:+UseG1GC -Xmx3G -Xms3G -Xmn1G -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
       },
       {
-        name: 'GraalVM',
-        args: '-Xms3G -Xmx3G -Xmn1G -XX:+DisableAttachMechanism -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -XX:+EnableJVMCI -XX:+UseJVMCICompiler -XX:+EagerJVMCI -Djvmci.Compiler=graal',
+        name: "GraalVM",
+        args:
+          "-Xms3G -Xmx3G -Xmn1G -XX:+DisableAttachMechanism -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -XX:+EnableJVMCI -XX:+UseJVMCICompiler -XX:+EagerJVMCI -Djvmci.Compiler=graal",
       },
     ],
-    jrePath: '',
+    jrePath: "",
     debugMode: false,
     skipChecks: false,
     // Enabled by default because a lot of people are on Windows
@@ -372,37 +373,41 @@ export default {
     availableJres: {
       Temurin: {
         32: {
-          url: 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x86-32_windows_hotspot_17.0.1_12.zip',
+          url:
+            "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x86-32_windows_hotspot_17.0.1_12.zip",
           checksum:
-            'f4bb1323cb34cdb42b92d825fe36fddd78b274f071b8971c5207a66a0e82748a',
-          folder: 'jdk-17.0.1+12-jre',
+            "f4bb1323cb34cdb42b92d825fe36fddd78b274f071b8971c5207a66a0e82748a",
+          folder: "jdk-17.0.1+12-jre",
         },
         64: {
-          url: 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jre_x64_windows_hotspot_17.0.2_8.zip',
+          url:
+            "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jre_x64_windows_hotspot_17.0.2_8.zip",
           checksum:
-            'c3204a19aede95ed02ad0f427210855a951d845ab7f806fb56b774daf2572454',
-          folder: 'jdk-17.0.2+8-jre',
+            "c3204a19aede95ed02ad0f427210855a951d845ab7f806fb56b774daf2572454",
+          folder: "jdk-17.0.2+8-jre",
         },
-        name: 'Temurin',
+        name: "Temurin",
       },
       Zulu: {
         32: {
-          url: 'https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_i686.zip',
+          url:
+            "https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_i686.zip",
           checksum:
-            'cb86ffb1232dfa77d6a538b4438877721180388716b7cf7403afd04dd9934ce1',
-          folder: 'zulu17.32.13-ca-jre17.0.2-win_i686',
+            "cb86ffb1232dfa77d6a538b4438877721180388716b7cf7403afd04dd9934ce1",
+          folder: "zulu17.32.13-ca-jre17.0.2-win_i686",
         },
         64: {
-          url: 'https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_x64.zip',
+          url:
+            "https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_x64.zip",
           checksum:
-            'a8f31891c563890c65ac20ff52906f16891a62d7bb497e389964153205cfd588',
-          folder: 'zulu17.32.13-ca-jre17.0.2-win_x64',
+            "a8f31891c563890c65ac20ff52906f16891a62d7bb497e389964153205cfd588",
+          folder: "zulu17.32.13-ca-jre17.0.2-win_x64",
         },
-        name: 'Zulu',
+        name: "Zulu",
       },
     },
     downloadedJres: [],
-    downloadingJre: '',
+    downloadingJre: "",
   }),
 
   methods: {
@@ -417,14 +422,14 @@ export default {
       const folder = await remote.dialog.showOpenDialog({
         title: `Select the new directory for Lunar Client ${version}`,
         defaultPath: this.directories[directoryIndex].path,
-        properties: ['dontAddToRecent', 'openDirectory'],
+        properties: ["dontAddToRecent", "openDirectory"],
       });
 
       if (folder.canceled) return;
 
       this.directories[directoryIndex].path = folder.filePaths[0];
 
-      await settings.set('launchDirectories', this.directories);
+      await settings.set("launchDirectories", this.directories);
     },
 
     /**
@@ -432,14 +437,14 @@ export default {
      */
     async resetLaunchDirectories() {
       this.directories = defaultSettings.launchDirectories;
-      await settings.set('launchDirectories', this.directories);
+      await settings.set("launchDirectories", this.directories);
     },
 
     /**
      * Update the allocated memory for the game
      */
     async updateRam() {
-      await settings.set('ram', this.ram.current);
+      await settings.set("ram", this.ram.current);
     },
 
     /**
@@ -448,7 +453,7 @@ export default {
     async updateResolution() {
       if (!this.resolution.width) this.resolution.width = 854;
       if (!this.resolution.height) this.resolution.height = 480;
-      await settings.set('resolution', this.resolution);
+      await settings.set("resolution", this.resolution);
     },
 
     /**
@@ -457,7 +462,7 @@ export default {
      */
     async updateActionAfterLaunch(action) {
       this.actionAfterLaunch = action;
-      await settings.set('actionAfterLaunch', action);
+      await settings.set("actionAfterLaunch", action);
     },
 
     /**
@@ -468,7 +473,7 @@ export default {
         this.jvmArgumentsPresetsVisible = false;
         this.jvmArguments = newArguments;
       }
-      await settings.set('jvmArguments', this.jvmArguments);
+      await settings.set("jvmArguments", this.jvmArguments);
     },
 
     /**
@@ -478,14 +483,14 @@ export default {
       const folder = await remote.dialog.showOpenDialog({
         title: `Select the new JRE for Lunar Client (Select the bin folder)`,
         defaultPath: this.jrePath,
-        properties: ['dontAddToRecent', 'openDirectory'],
+        properties: ["dontAddToRecent", "openDirectory"],
       });
 
       if (folder.canceled) return;
 
       this.jrePath = folder.filePaths[0];
 
-      await settings.set('jrePath', this.jrePath);
+      await settings.set("jrePath", this.jrePath);
     },
 
     /**
@@ -493,28 +498,28 @@ export default {
      */
     async resetJrePath() {
       this.jrePath = defaultSettings.jrePath;
-      await settings.set('jrePath', defaultSettings.jrePath);
+      await settings.set("jrePath", defaultSettings.jrePath);
     },
 
     /**
      * Update the debug mode
      */
     async updateDebugMode() {
-      await settings.set('debugMode', this.debugMode);
+      await settings.set("debugMode", this.debugMode);
     },
 
     /**
      * Update the skip checks
      */
     async updateSkipChecks() {
-      await settings.set('skipChecks', this.skipChecks);
+      await settings.set("skipChecks", this.skipChecks);
     },
 
     /**
      * Update downloaded JREs
      */
     async updateDownloadedJres() {
-      await settings.set('downloadedJres', this.downloadedJres);
+      await settings.set("downloadedJres", this.downloadedJres);
     },
 
     /**
@@ -523,12 +528,12 @@ export default {
     async applyJre(jrePath) {
       this.jrePath = join(
         constants.DOTLUNARCLIENT,
-        'solartweaks',
-        'jres',
+        "solartweaks",
+        "jres",
         jrePath,
-        'bin'
+        "bin"
       );
-      await settings.set('jrePath', this.jrePath);
+      await settings.set("jrePath", this.jrePath);
     },
 
     /**
@@ -545,7 +550,7 @@ export default {
         this.updateDownloadedJres();
       }
 
-      this.downloadingJre = '';
+      this.downloadingJre = "";
       this.jreDownloaderEnabled = true;
     },
 
@@ -560,31 +565,31 @@ export default {
   },
 
   async beforeMount() {
-    this.directories = await settings.get('launchDirectories');
-    this.ram.current = await settings.get('ram');
-    this.resolution = await settings.get('resolution');
-    this.actionAfterLaunch = await settings.get('actionAfterLaunch');
-    this.jvmArguments = await settings.get('jvmArguments');
-    this.jrePath = await settings.get('jrePath');
-    this.debugMode = await settings.get('debugMode');
-    this.skipChecks = await settings.get('skipChecks');
-    this.downloadedJres = await settings.get('downloadedJres');
+    this.directories = await settings.get("launchDirectories");
+    this.ram.current = await settings.get("ram");
+    this.resolution = await settings.get("resolution");
+    this.actionAfterLaunch = await settings.get("actionAfterLaunch");
+    this.jvmArguments = await settings.get("jvmArguments");
+    this.jrePath = await settings.get("jrePath");
+    this.debugMode = await settings.get("debugMode");
+    this.skipChecks = await settings.get("skipChecks");
+    this.downloadedJres = await settings.get("downloadedJres");
 
-    if (platform() !== 'win32') this.jreDownloaderEnabled = false;
+    if (platform() !== "win32") this.jreDownloaderEnabled = false;
 
-    if (cache.has('availableJres'))
-      return (this.availableJres = cache.get('availableJres'));
+    if (cache.has("availableJres"))
+      return (this.availableJres = cache.get("availableJres"));
 
     await axios
       .get(`${constants.API_URL}/launcher/jreDownloader`)
       .then((response) => {
-        cache.set('availableJres', response.data);
+        cache.set("availableJres", response.data);
         this.availableJres = response.data;
       })
       .catch(() => {
-        cache.set('availableJres', this.availableJres);
+        cache.set("availableJres", this.availableJres);
         logger.warn(
-          'Failed to fetch available JREs, falling back to hardcoded data...'
+          "Failed to fetch available JREs, falling back to hardcoded data..."
         );
       });
   },
@@ -595,14 +600,11 @@ export default {
 /* Pseudo components */
 
 .input {
-  width: 250px;
   height: 10px;
   background-color: #171717;
   border: none;
-  color: #f7f7f7;
   outline: none;
   padding: 6px;
-  margin-top: 7px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -610,12 +612,8 @@ export default {
 .button {
   background-color: #2b71ce;
   border: none;
-  width: fit-content;
-  color: #f7f7f7;
   height: 30px;
   border-radius: 5px;
-  margin-top: 12px;
-  margin-right: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
@@ -664,50 +662,59 @@ export default {
 }
 
 .settings-card {
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .settings-card-item {
-  width: 320px;
-  margin-top: 25px;
-  margin-bottom: 20px;
+  margin: 10px;
+  flex: 1 1 0px;
 }
 
 .settings-card-item.settings-card-item-container {
-  width: 350px;
+  display: flex;
+  flex-direction: column;
 }
 
-.settings-card-little {
-  width: 320px;
+#dirs-container {
+  flex: 1.2 0 0px;
 }
 
-.card-item-separator-horizontal {
-  height: 15px;
-  width: 100%;
-}
-
-.card-item-separator-vertical {
-  height: 100%;
-  width: 30px;
+.dirs-card-item {
+  margin: 0;
 }
 
 #settings-directories {
   margin-top: 20px;
-  height: 240px;
   display: flex;
+  flex: 1 1 0px;
   flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
 }
 
 .settings-directories-item {
-  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  margin: 3px;
 }
 
 .settings-directories-item-version {
-  color: #f7f7f7;
   font-weight: 200;
   font-size: 15px;
   margin-right: 10px;
+}
+
+.settings-directories-input {
+  flex: 1 1 0px;
+}
+
+.directories-card-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.directories-card-item-content {
+  flex: 1 1 0px;
+  display: flex;
 }
 
 #settings-ram {
@@ -723,7 +730,6 @@ export default {
 }
 
 #settings-ram-values-container {
-  color: #f7f7f7;
   text-align: center;
 }
 
@@ -747,7 +753,6 @@ export default {
   border-radius: 4px;
   background: transparent;
   outline: none;
-  caret-color: #f7f7f7;
   width: 75px;
   height: 30px;
   margin-top: 12px;
@@ -755,7 +760,6 @@ export default {
   font-style: italic;
   font-size: 16px;
   font-weight: bold;
-  color: #f7f7f7;
 }
 
 .settings-resolution-input::-webkit-outer-spin-button,
@@ -766,7 +770,6 @@ export default {
 
 #settings-resolution {
   display: flex;
-  color: #f7f7f7;
   justify-content: center;
   margin-top: 15px;
   height: 69px;
@@ -797,11 +800,11 @@ export default {
 }
 
 #settings-after-launch {
-  width: 30%;
+  width: 100%;
 }
 
 .settings-after-launch-action {
-  width: 300px;
+  width: 100%;
   background-color: #343434;
   margin-top: 10px;
 }
@@ -844,14 +847,12 @@ export default {
 }
 
 #args-presets-icon {
-  color: #f7f7f7;
   font-size: 26px;
   margin-top: 8px;
   margin-left: 15px;
 }
 
 #args-presets-title {
-  color: #f7f7f7;
   font-size: 20px;
   margin-left: 10px;
   font-weight: 500;
@@ -859,7 +860,6 @@ export default {
 }
 
 #args-presets-subtitle {
-  color: #f7f7f7;
   font-weight: 400;
   font-size: 12px;
   margin-left: 15px;
@@ -884,7 +884,6 @@ export default {
   background-color: #252523;
   margin-top: 2px;
   margin-left: 15px;
-  color: #f7f7f7;
   transition: background-color 0.2s ease;
 }
 
@@ -896,9 +895,7 @@ export default {
   resize: none;
   border: none;
   outline: none;
-  caret-color: #f7f7f7;
   background-color: #171717;
-  color: #f7f7f7;
   font-style: italic;
   margin: 15px;
   margin-bottom: 0px;
@@ -914,16 +911,13 @@ export default {
 
 #settings-jre-path {
   display: flex;
+  margin-top: 5px;
 }
 
 #settings-jre-path-input {
-  width: 190px;
+  flex: 1 1 0px;
   height: 20px;
   margin-right: 7px;
-}
-
-#settings-jre-path-button {
-  margin-top: 7.5px;
 }
 
 #settings-debug-mode {
@@ -938,7 +932,6 @@ export default {
 }
 
 #settings-debug-mode-text {
-  color: #f7f7f7;
   margin-left: 10px;
   margin-top: 7px;
 }
@@ -948,20 +941,21 @@ export default {
   height: 234px;
 }
 
+#jre-settings {
+  margin: 0;
+}
+
 .jre-item {
-  color: #f7f7f7;
   margin: 10px;
 }
 
 .jre-item-button {
   margin-left: 5px;
   border: none;
-  width: 90px;
   background-color: #2b71ce;
-  padding: 3px;
+  padding: 5px 10px;
   border-radius: 5px;
   transition: background-color 0.2s ease;
-  color: #f7f7f7;
   cursor: pointer;
 }
 
@@ -983,7 +977,6 @@ export default {
 }
 
 .jre-item-icon {
-  color: #f7f7f7;
   margin-right: 5px;
 }
 

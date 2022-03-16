@@ -6,6 +6,7 @@
       subtitle="Learn a bit more about Solar Tweaks, what is it and how it works"
       background="about"
       id="about-card"
+      contentClass="vertical-card-container"
     >
       <div id="cards-item">
         <CardItem
@@ -33,7 +34,7 @@
           >
             <button
               @click="openLink(constants.links.DISCORD)"
-              id="discord-button"
+              class="button"
             >
               <i class="fa-solid fa-up-right-from-square button-icon"></i>
               Discord
@@ -44,9 +45,9 @@
             icon="fa-solid fa-code-branch"
             :subtitle="`Electron: v${aboutLauncherDescription.electron} • Node: v${aboutLauncherDescription.node} • Chrome: v${aboutLauncherDescription.chrome}`"
             class="little-card"
-            ><h3 id="launcher-version">
+            ><h4 id="launcher-version">
               Version {{ aboutLauncherDescription.launcher }}
-            </h3>
+            </h4>
           </CardItem>
           <CardItem
             title="Lunar Client"
@@ -56,7 +57,7 @@
           >
             <button
               @click="openLink(constants.links.LUNARCLIENT)"
-              id="discord-button"
+              class="button"
             >
               <i class="fa-solid fa-up-right-from-square button-icon"></i>
               Lunar Client
@@ -113,25 +114,11 @@ export default {
   align-items: center;
 }
 
-#cards-item {
-  display: flex;
-  flex-direction: column;
-}
-
 #about-card {
   margin-top: 50px;
 }
 
-#about-us-card-item {
-  margin-top: 20px;
-  width: 90%;
-  height: 80px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 #about-us {
-  color: #f7f7f7;
   text-align: center;
   font-size: smaller;
   font-weight: 300;
@@ -140,33 +127,27 @@ export default {
 }
 
 .little-card {
-  width: 300px;
-  height: 85px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 15px;
-  margin: 24px;
-  margin-top: 0px;
+  justify-content: center;
 }
 
 #little-cards {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  margin-top: 20px;
 }
 
 .button-icon {
   margin-right: 5px;
 }
 
-#discord-button {
+.button {
   background-color: #2b71ce;
   border: none;
-  width: 150px;
-  color: #f7f7f7;
-  height: 30px;
+  padding: 10px 25px;
   border-radius: 5px;
   margin-top: 12px;
   margin-right: 5px;
@@ -174,12 +155,11 @@ export default {
   transition: background-color 0.2s ease-in-out;
 }
 
-#discord-button:hover {
+.button:hover {
   background-color: #2560ac;
 }
 
 #launcher-version {
-  color: #f7f7f7;
   margin-top: 3px;
   font-weight: 400;
 }

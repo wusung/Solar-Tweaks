@@ -176,7 +176,6 @@ export default {
   height: 35px;
   border: none;
   border-radius: 3px;
-  color: #f7f7f7;
   box-shadow: 0 0 0 2px transparent;
   transition: background-color 0.3s ease-out, box-shadow 0.3s ease-out;
   font-size: 16px;
@@ -229,6 +228,5 @@ export default {
 
 .titlebar-button-icon {
   font-size: 17px;
-  color: #f7f7f7;
 }
 </style>

@@ -12,6 +12,7 @@ const store = createStore({
       icon: 'fa-solid fa-gamepad',
     },
     isCreatingShortcut: false,
+    isDiscordLogged: false
   },
 
   getters: {
@@ -20,6 +21,7 @@ const store = createStore({
     getPlayContainerHeight: (state) => state.playContainerHeight,
     isLaunching: (state) => state.isLaunching,
     getLaunchingState: (state) => state.launchingState,
+    isDiscordLogged: (state) => state.isDiscordLogged
   },
 
   mutations: {

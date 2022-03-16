@@ -15,6 +15,7 @@ import { login } from './javascript/discord';
 import setupSettings from './javascript/settings';
 import { clearLogs } from './javascript/logger';
 import { remote } from 'electron';
+import './assets/global.css';
 
 export default {
   name: 'App',

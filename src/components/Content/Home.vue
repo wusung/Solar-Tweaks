@@ -118,7 +118,6 @@ export default {
 
 <style scoped>
 #posts-title {
-  color: #f7f7f7;
   font-size: 1.25em;
   letter-spacing: 3px;
   line-height: 1.2;
@@ -161,7 +160,6 @@ export default {
 .post-description {
   font-size: small;
   font-weight: 300;
-  color: #f7f7f7;
   line-height: 1.5;
   margin-left: 5px;
   margin-right: 5px;
@@ -197,13 +195,12 @@ export default {
 }
 
 .post-author {
-  color: #f7f7f7;
+  font-size: 16px;
 }
 
 .post-button {
   background-color: #2b71ce;
   border: none;
-  color: #f7f7f7;
   width: 100px;
   height: 25px;
   border-radius: 2px;
