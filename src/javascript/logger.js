@@ -1,11 +1,6 @@
-import process from 'process';
 import fs from './fs';
 import { join } from 'path';
-
-const dotLunarClient =
-  process.platform === 'win32'
-    ? join(process.env.USERPROFILE, '.lunarclient')
-    : join(process.env.HOME, '.lunarclient');
+import constants from '../constants';
 
 /**
  * Log system used to log messages to the console and to the log file
@@ -15,10 +10,14 @@ export default class Logger {
     this.name = name;
     this.logger = console;
     (async () => {
-      if (!(await fs.exists(join(dotLunarClient, 'solartweaks'))))
-        await fs.mkdir(join(dotLunarClient, 'solartweaks'));
-      if (!(await fs.exists(join(dotLunarClient, 'solartweaks', 'logs'))))
-        await fs.mkdir(join(dotLunarClient, 'solartweaks', 'logs'));
+      if (!(await fs.exists(join(constants.DOTLUNARCLIENT, 'solartweaks'))))
+        await fs.mkdir(join(constants.DOTLUNARCLIENT, 'solartweaks'));
+      if (
+        !(await fs.exists(
+          join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs')
+        ))
+      )
+        await fs.mkdir(join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs'));
     })();
   }
 
@@ -52,7 +51,7 @@ export default class Logger {
    */
   async writeLog(log) {
     await fs.appendFile(
-      join(dotLunarClient, 'solartweaks', 'logs', 'latest.log'),
+      join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs', 'latest.log'),
       `${log}\n`
     );
   }
@@ -63,7 +62,7 @@ export default class Logger {
  */
 export async function clearLogs() {
   await fs.writeFile(
-    join(dotLunarClient, 'solartweaks', 'logs', 'latest.log'),
+    join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs', 'latest.log'),
     ''
   );
 }

@@ -32,10 +32,7 @@
                   <p>Support, help, resources and more!</p>
                 </div>
               </div>
-              <button 
-                id="join-button"
-                @click="openInvite()"
-                >Join</button>
+              <button id="join-button" @click="openInvite()">Join</button>
             </div>
           </div>
         </div>
@@ -45,19 +42,25 @@
 </template>
 
 <script>
-import Card from "../Card/Card.vue";
-import CardItem from "../Card/CardItem.vue";
-import { remote } from "electron";
+import Card from '../Card/Card.vue';
+import CardItem from '../Card/CardItem.vue';
+import { remote } from 'electron';
+import constants from '../../constants';
 
 export default {
-  name: "Discord",
+  name: 'Discord',
+
   components: {
     Card,
     CardItem,
   },
+
   methods: {
+    /**
+     * Opens the Discord invite link in the default browser
+     */
     openInvite() {
-      remote.shell.openExternal("https://discord.gg/SolarTweaks");
+      remote.shell.openExternal(constants.links.DISCORD);
     },
   },
 };

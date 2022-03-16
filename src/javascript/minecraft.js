@@ -1,4 +1,3 @@
-import * as process from 'process';
 import { exec } from 'child_process';
 import store from '../store';
 import { machineId as _machineId } from 'node-machine-id';
@@ -10,6 +9,7 @@ import { stat } from 'fs/promises';
 import { remote } from 'electron';
 import settings from 'electron-settings';
 import { updateActivity } from './discord';
+import constants from '../constants';
 
 import { downloadAndSaveFile } from './downloader';
 import { downloadLunarAssets } from './assets';
@@ -18,11 +18,6 @@ import Logger from './logger';
 const logger = new Logger('launcher');
 
 import fs from './fs';
-
-const dotLunarClient =
-  platform() === 'win32'
-    ? join(process.env.USERPROFILE, '.lunarclient')
-    : join(process.env.HOME, '.lunarclient');
 
 /**
  * Checks if the `.lunarclient` directory is valid
@@ -38,10 +33,10 @@ export async function setupLunarClientDirectory() {
 
   const folders = ['licenses', 'offline', 'jre'];
 
-  if (!(await fs.exists(dotLunarClient))) {
+  if (!(await fs.exists(constants.DOTLUNARCLIENT))) {
     logger.debug('Creating .lunarclient directory...');
     await fs
-      .mkdir(dotLunarClient)
+      .mkdir(constants.DOTLUNARCLIENT)
       .then(() => {
         logger.debug('Created .lunarclient directory');
       })
@@ -62,10 +57,10 @@ export async function setupLunarClientDirectory() {
       icon: 'fa-solid fa-folder',
     });
 
-    if (!(await fs.exists(join(dotLunarClient, folder)))) {
+    if (!(await fs.exists(join(constants.DOTLUNARCLIENT, folder)))) {
       logger.debug(`Creating ${folder} subdirectory...`);
       await fs
-        .mkdir(join(dotLunarClient, folder))
+        .mkdir(join(constants.DOTLUNARCLIENT, folder))
         .then(() => {
           logger.debug(`Created ${folder} subdirectory`);
         })
@@ -98,7 +93,7 @@ export async function fetchMetadata(skipLaunchingState = false) {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        'https://api.lunarclientprod.com/launcher/launch',
+        constants.links.LC_METADATA_ENDPOINT,
         {
           hwid: machineId,
           os: platform(),
@@ -138,12 +133,16 @@ export async function checkLicenses(metadata) {
     logger.debug(
       `Checking license ${parseInt(index) + 1}/${metadata.licenses.length}`
     );
-    const licensePath = join(dotLunarClient, 'licenses', license.file);
+    const licensePath = join(
+      constants.DOTLUNARCLIENT,
+      'licenses',
+      license.file
+    );
 
     if (!(await fs.exists(licensePath))) {
       await downloadAndSaveFile(
         license.url,
-        join(dotLunarClient, 'licenses', license.file),
+        join(constants.DOTLUNARCLIENT, 'licenses', license.file),
         'text',
         license.sha1,
         'sha1'
@@ -169,11 +168,13 @@ export async function checkGameFiles(metadata) {
 
   if (
     !(await fs.exists(
-      join(dotLunarClient, 'offline', await settings.get('version'))
+      join(constants.DOTLUNARCLIENT, 'offline', await settings.get('version'))
     ))
   ) {
     await fs
-      .mkdir(join(dotLunarClient, 'offline', await settings.get('version')))
+      .mkdir(
+        join(constants.DOTLUNARCLIENT, 'offline', await settings.get('version'))
+      )
       .catch((error) => {
         logger.error('Failed to create version folder', error);
       });
@@ -182,7 +183,7 @@ export async function checkGameFiles(metadata) {
   for (const index in metadata.launchTypeData.artifacts) {
     const artifact = metadata.launchTypeData.artifacts[index];
     const gameFilePath = join(
-      dotLunarClient,
+      constants.DOTLUNARCLIENT,
       'offline',
       await settings.get('version'),
       artifact.name
@@ -197,7 +198,7 @@ export async function checkGameFiles(metadata) {
       await downloadAndSaveFile(
         artifact.url,
         join(
-          dotLunarClient,
+          constants.DOTLUNARCLIENT,
           'offline',
           await settings.get('version'),
           artifact.name
@@ -232,7 +233,7 @@ export async function checkNatives(metadata) {
   if (
     await fs.exists(
       join(
-        dotLunarClient,
+        constants.DOTLUNARCLIENT,
         'offline',
         await settings.get('version'),
         artifact.name
@@ -242,7 +243,7 @@ export async function checkNatives(metadata) {
     if (
       !(await fs.exists(
         join(
-          dotLunarClient,
+          constants.DOTLUNARCLIENT,
           'offline',
           await settings.get('version'),
           'natives'
@@ -251,14 +252,14 @@ export async function checkNatives(metadata) {
     ) {
       await extractZip(
         join(
-          dotLunarClient,
+          constants.DOTLUNARCLIENT,
           'offline',
           await settings.get('version'),
           artifact.name
         ),
         {
           dir: join(
-            dotLunarClient,
+            constants.DOTLUNARCLIENT,
             'offline',
             await settings.get('version'),
             'natives'
@@ -293,19 +294,17 @@ export async function checkPatcher() {
   });
 
   const release = await axios
-    .get(
-      'https://api.github.com/repos/Solar-Tweaks/SolarPatcher/releases?per_page=1'
-    )
+    .get(`${constants.SOLAR_PATCHER_GITHUB_API}/releases?per_page=1`)
     .catch((reason) => {
       logger.error('Failed to fetch patcher metadata', reason);
     });
   const updaterFile = release.data[0].assets.find(
-    (asset) => asset.name === 'updater.json'
+    (asset) => asset.name === constants.patcher.UPDATER
   );
 
   await downloadAndSaveFile(
     updaterFile.browser_download_url,
-    join(dotLunarClient, 'solartweaks', 'updater-patcher.json'),
+    join(constants.DOTLUNARCLIENT, 'solartweaks', 'updater-patcher.json'),
     'blob'
   ).catch((reason) => {
     logger.error('Failed to download patcher', reason);
@@ -313,7 +312,9 @@ export async function checkPatcher() {
 
   const updater = JSON.parse(
     await fs
-      .readFile(join(dotLunarClient, 'solartweaks', 'updater-patcher.json'))
+      .readFile(
+        join(constants.DOTLUNARCLIENT, 'solartweaks', 'updater-patcher.json')
+      )
       .catch((reason) => {
         logger.error('Failed to read patcher file', reason);
       })
@@ -332,7 +333,7 @@ export async function checkPatcher() {
 
   await downloadAndSaveFile(
     patcherFile.browser_download_url,
-    join(dotLunarClient, 'solartweaks', 'solar-patcher.jar'),
+    join(constants.DOTLUNARCLIENT, 'solartweaks', constants.patcher.PATCHER),
     'blob',
     updater.sha1,
     'sha1'
@@ -356,7 +357,11 @@ export async function patchGame() {
     icon: 'fa-solid fa-cog',
   });
 
-  const filePath = join(dotLunarClient, 'solartweaks', 'config.json');
+  const filePath = join(
+    constants.DOTLUNARCLIENT,
+    'solartweaks',
+    constants.patcher.CONFIG
+  );
 
   logger.debug(`Reading ${filePath}`);
   const configRaw = await fs.readFile(filePath).catch((reason) => {
@@ -419,7 +424,7 @@ export async function getJavaArguments(
   overrideVersion = null
 ) {
   const natives = join(
-    dotLunarClient,
+    constants.DOTLUNARCLIENT,
     'offline',
     await settings.get('version'),
     'natives'
@@ -437,7 +442,7 @@ export async function getJavaArguments(
   if (overrideVersion) version = overrideVersion;
 
   const lunarJarFile = async (filename) =>
-    `"${join(dotLunarClient, 'offline', version, filename)}"`;
+    `"${join(constants.DOTLUNARCLIENT, 'offline', version, filename)}"`;
 
   const gameDir = (await settings.get('launchDirectories')).find(
     (directory) => directory.version === version
@@ -445,15 +450,27 @@ export async function getJavaArguments(
 
   const resolution = await settings.get('resolution');
   const patcherPath = join(
-    dotLunarClient,
+    constants.DOTLUNARCLIENT,
     'solartweaks',
-    'solar-patcher.jar'
-  )
+    constants.patcher.PATCHER
+  );
 
   // Make sure the patcher exists, or else the game will crash (jvm init error)
   stat(patcherPath)
-    .then(() => args.push(`-javaagent:"${patcherPath}"="${join(dotLunarClient, 'solartweaks', 'config.json')}"`))
-    .catch(e => logger.warn(`Launching the game without patcher; ${patcherPath} does not exist! ${e}`))
+    .then(() =>
+      args.push(
+        `-javaagent:"${patcherPath}"="${join(
+          constants.DOTLUNARCLIENT,
+          'solartweaks',
+          constants.patcher.CONFIG
+        )}"`
+      )
+    )
+    .catch((e) =>
+      logger.warn(
+        `Launching the game without patcher; ${patcherPath} does not exist! ${e}`
+      )
+    );
 
   args.push(
     await settings.get('jvmArguments'),
@@ -484,7 +501,7 @@ export async function getJavaArguments(
     // '--assetsDir',
     // `"${join(gameDir, 'assets')}"`,
     '--texturesDir',
-    `"${join(dotLunarClient, 'textures')}"`,
+    `"${join(constants.DOTLUNARCLIENT, 'textures')}"`,
     '--width',
     resolution.width,
     '--height',
@@ -517,7 +534,11 @@ export async function launchGame(metadata, serverIp = null) {
   const process = await exec(
     `"${join(await settings.get('jrePath'), 'javaw')}" ${args.join(' ')}`,
     {
-      cwd: join(dotLunarClient, 'offline', await settings.get('version')),
+      cwd: join(
+        constants.DOTLUNARCLIENT,
+        'offline',
+        await settings.get('version')
+      ),
     }
   );
 

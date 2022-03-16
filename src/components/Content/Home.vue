@@ -41,8 +41,11 @@
 <script>
 import { remote } from 'electron';
 import axios from 'axios';
+
 import { cache } from '../../main';
 import Logger from '../../javascript/logger';
+import constants from '../../constants';
+
 const logger = new Logger('home');
 
 export default {
@@ -98,7 +101,7 @@ export default {
     if (cache.has('blogPosts')) return (this.posts = cache.get('blogPosts'));
 
     axios
-      .get('https://api.solartweaks.com/api/launcher/blogPosts')
+      .get(`${constants.API_URL}/launcher/blogPosts`)
       .then((response) => {
         this.posts = response.data;
         cache.set('blogPosts', this.posts);

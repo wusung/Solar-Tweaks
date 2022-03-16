@@ -76,9 +76,12 @@
 <script>
 import settings from 'electron-settings';
 import axios from 'axios';
+
 import { cache } from '../../main';
+import constants from '../../constants';
 import { checkAndLaunch } from '../../javascript/minecraft';
 import Logger from '../../javascript/logger';
+
 const logger = new Logger('servers');
 
 export default {
@@ -190,7 +193,7 @@ export default {
         };
         logger.debug(`Fetching ${server.ip} status...`);
         await axios
-          .get('https://mcapi.us/server/status', { params: query })
+          .get(constants.links.SERVER_STATUS_ENDPOINT, { params: query })
           .then((response) => {
             cache.set(server.ip, response.data);
             content = response.data;

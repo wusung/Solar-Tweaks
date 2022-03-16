@@ -1,16 +1,11 @@
 import { checkHash, downloadAndSaveFile } from './downloader';
-import process from 'process';
 import { join } from 'path';
 import fs from './fs';
 import store from '../store';
 import Logger from './logger';
+import constants from '../constants';
 
 const logger = new Logger('launcher');
-
-const dotLunarClient =
-  process.platform === 'win32'
-    ? join(process.env.USERPROFILE, '.lunarclient')
-    : join(process.env.HOME, '.lunarclient');
 
 /**
  * Check asset file hash + other stuff (I totally remember what I done here + I'm not lazy to read it)
@@ -27,7 +22,11 @@ async function checkAsset(metadata, data, index) {
       return;
     }
 
-    const path = join(dotLunarClient, 'textures', asset.split(' ')[0]);
+    const path = join(
+      constants.DOTLUNARCLIENT,
+      'textures',
+      asset.split(' ')[0]
+    );
     const sha1 = asset.split(' ')[1].toLowerCase();
 
     fs.exists(path).then(async (exists) => {
@@ -68,7 +67,7 @@ export async function downloadLunarAssets(metadata) {
   });
   return new Promise((resolve, reject) => {
     const postFolderCheck = (resolve, reject) => {
-      const indexPath = join(dotLunarClient, 'textures', 'index.txt');
+      const indexPath = join(constants.DOTLUNARCLIENT, 'textures', 'index.txt');
       downloadAndSaveFile(
         metadata.textures.indexUrl,
         indexPath,
@@ -89,7 +88,7 @@ export async function downloadLunarAssets(metadata) {
         })
         .catch(reject);
     };
-    fs.mkdir(join(dotLunarClient, 'textures'))
+    fs.mkdir(join(constants.DOTLUNARCLIENT, 'textures'))
       .then(() => {
         postFolderCheck(resolve, reject);
       })

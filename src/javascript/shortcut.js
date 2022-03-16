@@ -7,13 +7,9 @@ import Logger from './logger';
 import { exec } from 'child_process';
 import { remote } from 'electron';
 import store from '../store';
+import constants from '../constants';
 
 const logger = new Logger('shortcut');
-
-const dotLunarClient =
-  process.platform === 'win32'
-    ? join(process.env.USERPROFILE, '.lunarclient')
-    : join(process.env.HOME, '.lunarclient');
 
 /**
  * Creates the wrapper
@@ -22,16 +18,25 @@ const dotLunarClient =
  * @returns {Promise<void>}
  */
 export async function createShortcutWrapper(version, serverIp = null) {
-  if (!(await fs.exists(join(dotLunarClient, 'solartweaks', 'wrappers'))))
-    await fs.mkdir(join(dotLunarClient, 'solartweaks', 'wrappers'));
+  if (
+    !(await fs.exists(
+      join(constants.DOTLUNARCLIENT, 'solartweaks', 'wrappers')
+    ))
+  )
+    await fs.mkdir(join(constants.DOTLUNARCLIENT, 'solartweaks', 'wrappers'));
 
   let wrapper = `wrapper-${version}-${serverIp}.`;
   if (process.platform === 'win32') wrapper += 'cmd';
   else wrapper += 'sh';
 
-  const versionFolder = join(dotLunarClient, 'offline', version);
+  const versionFolder = join(constants.DOTLUNARCLIENT, 'offline', version);
 
-  const wrapperFile = join(dotLunarClient, 'solartweaks', 'wrappers', wrapper);
+  const wrapperFile = join(
+    constants.DOTLUNARCLIENT,
+    'solartweaks',
+    'wrappers',
+    wrapper
+  );
   if (await fs.exists(wrapperFile)) {
     logger.debug('Wrapper already exists');
     return [wrapperFile, versionFolder];

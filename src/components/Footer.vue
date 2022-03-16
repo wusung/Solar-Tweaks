@@ -28,6 +28,7 @@
 
 <script>
 import { remote } from 'electron';
+import constants from '../constants';
 
 export default {
   name: 'Footer',
@@ -37,15 +38,15 @@ export default {
     links: [
       {
         icon: 'fa-brands fa-discord',
-        url: 'https://discord.solartweaks.com',
+        url: constants.links.DISCORD,
       },
       {
         icon: 'fa-brands fa-youtube',
-        url: 'https://www.youtube.com/channel/UCDRSsAqDsCs2GYfvy2xilWw',
+        url: constants.links.YOUTUBE,
       },
       {
         icon: 'fa-brands fa-github',
-        url: 'https://github.com/Solar-Tweaks/',
+        url: constants.links.GITHUB,
       },
     ],
   }),

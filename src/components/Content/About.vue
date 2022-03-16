@@ -32,7 +32,7 @@
             class="little-card"
           >
             <button
-              @click="openLink('https://discord.solartweaks.com')"
+              @click="openLink(constants.links.DISCORD)"
               id="discord-button"
             >
               <i class="fa-solid fa-up-right-from-square button-icon"></i>
@@ -55,7 +55,7 @@
             class="little-card"
           >
             <button
-              @click="openLink('https://www.lunarclient.com/')"
+              @click="openLink(constants.links.LUNARCLIENT)"
               id="discord-button"
             >
               <i class="fa-solid fa-up-right-from-square button-icon"></i>
@@ -74,6 +74,7 @@ import process from 'process';
 
 import Card from '../Card/Card.vue';
 import CardItem from '../Card/CardItem.vue';
+import constants from '../../constants';
 
 export default {
   name: 'About',
@@ -84,6 +85,7 @@ export default {
   },
 
   data: () => ({
+    constants,
     aboutLauncherDescription: {
       electron: process.versions.electron,
       node: process.versions.node,

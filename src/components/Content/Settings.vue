@@ -308,7 +308,6 @@ import { remote } from 'electron';
 import settings from 'electron-settings';
 import { totalmem, platform } from 'os';
 import { join } from 'path';
-import process from 'process';
 import { defaultSettings } from '../../javascript/settings';
 import axios from 'axios';
 import { cache } from '../../main';
@@ -317,12 +316,8 @@ import {
   removeJre as _removeJre,
 } from '../../javascript/jreDownloader';
 import Logger from '../../javascript/logger';
+import constants from '../../constants';
 const logger = new Logger('settings');
-
-const dotLunarClient =
-  process.platform === 'win32'
-    ? join(process.env.USERPROFILE, '.lunarclient')
-    : join(process.env.HOME, '.lunarclient');
 
 export default {
   name: 'Settings',
@@ -527,7 +522,7 @@ export default {
      */
     async applyJre(jrePath) {
       this.jrePath = join(
-        dotLunarClient,
+        constants.DOTLUNARCLIENT,
         'solartweaks',
         'jres',
         jrePath,
@@ -581,7 +576,7 @@ export default {
       return (this.availableJres = cache.get('availableJres'));
 
     await axios
-      .get('https://api.solartweaks.com/api/launcher/jreDownloader')
+      .get(`${constants.API_URL}/launcher/jreDownloader`)
       .then((response) => {
         cache.set('availableJres', response.data);
         this.availableJres = response.data;

@@ -3,15 +3,10 @@ import { move } from 'fs-extra';
 import extract from 'extract-zip';
 import { arch } from 'os';
 import { join } from 'path';
-import process from 'process';
 import { downloadAndSaveFile } from './downloader';
 import Logger from './logger';
+import constants from '../constants';
 const logger = new Logger('jreDownloader');
-
-const dotLunarClient =
-  process.platform === 'win32'
-    ? join(process.env.USERPROFILE, '.lunarclient')
-    : join(process.env.HOME, '.lunarclient');
 
 /**
  * Download and extract a Java JRE from the given manifest file
@@ -22,7 +17,7 @@ export async function downloadJre(_jre) {
   let jre;
   arch() === 'x64' ? (jre = _jre['64']) : (jre = _jre['32']);
 
-  const jresPath = join(dotLunarClient, 'solartweaks', 'jres');
+  const jresPath = join(constants.DOTLUNARCLIENT, 'solartweaks', 'jres');
   const jrePath = join(jresPath, _jre.name);
 
   console.log();
@@ -56,7 +51,7 @@ export async function downloadJre(_jre) {
  * Delete a downloaded JRE
  */
 export async function removeJre(jreName) {
-  await fs.rm(join(dotLunarClient, 'solartweaks', 'jres', jreName), {
+  await fs.rm(join(constants.DOTLUNARCLIENT, 'solartweaks', 'jres', jreName), {
     recursive: true,
     force: true,
   });
