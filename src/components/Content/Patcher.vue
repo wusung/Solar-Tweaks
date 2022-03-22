@@ -423,7 +423,6 @@ export default {
 }
 
 #options-title {
-  color: #f7f7f7;
   letter-spacing: 2px;
   font-weight: 600;
   margin-top: 8px;
@@ -437,7 +436,6 @@ export default {
 }
 
 #options-label {
-  color: #f7f7f7;
   font-weight: 500;
   font-size: 25px;
   letter-spacing: 0.5px;
@@ -450,7 +448,6 @@ export default {
 
 .options-value-title {
   text-align: center;
-  color: #f7f7f7;
   font-weight: 500;
   font-size: 24px;
   margin-top: 35px;
@@ -461,8 +458,6 @@ export default {
   border: none;
   background-color: #202020;
   outline: none;
-  caret-color: #f7f7f7;
-  color: #f7f7f7;
   height: 50px;
   width: 450px;
   margin-top: 15px;
@@ -530,7 +525,6 @@ export default {
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
   font-size: 15px;
-  color: #f7f7f7;
   letter-spacing: 5px;
   font-weight: 500;
   position: absolute;
@@ -564,7 +558,6 @@ export default {
   height: 40px;
   border: 2px solid #5858587a;
   margin-top: 16px;
-  color: #f7f7f7;
   font-weight: 500;
   letter-spacing: 2px;
   font-size: 15px;

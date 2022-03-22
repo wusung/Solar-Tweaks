@@ -216,7 +216,6 @@ export default {
 }
 
 #play-btn-title {
-  color: #f7f7f7;
   font-size: x-large;
   font-weight: 700;
   letter-spacing: 2.5px;
@@ -225,12 +224,10 @@ export default {
 }
 
 .play-btn-icon {
-  color: #f7f7f7;
   margin-right: 8px;
 }
 
 #play-btn-subtitle {
-  color: #f7f7f7;
   font-size: 0.775rem;
   font-weight: 400;
   letter-spacing: 3px;
@@ -252,7 +249,6 @@ export default {
 }
 
 #select-version-title {
-  color: #f7f7f7;
   letter-spacing: 2px;
   font-weight: 600;
   font-size: 35px;
@@ -260,7 +256,6 @@ export default {
 }
 
 #select-version-subtitle {
-  color: #f7f7f7;
   letter-spacing: 2px;
   font-weight: 300;
   margin-top: 5px;
@@ -294,7 +289,6 @@ export default {
 }
 
 .select-version-card-title {
-  color: #f7f7f7;
   font-size: 35px;
   padding-top: 55px; /* Value found with something called bruteforce and my eyes with Dummy */
 }

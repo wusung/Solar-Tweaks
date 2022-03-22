@@ -7,7 +7,7 @@
       </div>
       <h4 class="card-item-subtitle">{{ subtitle }}</h4>
     </div>
-    <div class="card-item-content">
+    <div :class="['card-item-content', contentClass]">
       <slot></slot>
     </div>
   </div>
@@ -17,7 +17,7 @@
 export default {
   name: 'CardItem',
 
-  props: ['icon', 'title', 'subtitle'],
+  props: ['icon', 'title', 'subtitle', 'contentClass'],
 };
 </script>
 
@@ -25,9 +25,10 @@ export default {
 .card-item {
   background-color: #1d1d1b;
   border-radius: 10px;
-  height: fit-content;
-  width: fit-content;
   padding: 15px;
+  margin: 5px;
+  margin-top: 15px;
+  flex: 1 1 0px;
 }
 
 .card-item-header {
@@ -42,19 +43,16 @@ export default {
 }
 
 .card-item-icon {
-  color: #f7f7f7;
   font-size: 20px;
   margin-right: 10px;
 }
 
 .card-item-title {
-  color: #f7f7f7;
   font-weight: 200;
   font-size: 20px;
 }
 
 .card-item-subtitle {
-  color: #f7f7f7;
   font-weight: 200;
   font-size: 12px;
   margin-top: 5px;

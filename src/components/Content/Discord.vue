@@ -16,7 +16,7 @@
             Notifications, important announcements and development updates will
             be posted there as well, so make sure to check it out!
           </p>
-          <div id="discord-invite">
+          <div id="discord-invite" v-if="!$store.getters.isDiscordLogged">
             <p id="invite-caption">You've been invited to join a server</p>
             <div id="invite-layout">
               <div id="invite-content">
@@ -87,7 +87,6 @@ export default {
 
 #discord-text {
   width: 80%;
-  color: #f7f7f7;
   font-size: smaller;
   font-weight: 300;
   letter-spacing: 0.55px;
@@ -150,7 +149,6 @@ export default {
 
 #invite-text,
 #join-button {
-  color: #f7f7f7;
   font-size: 1rem;
 }
 

@@ -258,7 +258,6 @@ export default {
   height: 50px;
   background: transparent;
   border: none;
-  color: #f7f7f7;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
@@ -272,7 +271,6 @@ export default {
   height: 20px;
   background-color: #171717;
   border: none;
-  color: #f7f7f7;
   outline: none;
   padding: 6px;
   margin-top: 7px;
@@ -283,7 +281,6 @@ export default {
   height: 30px;
   background-color: #171717;
   border: none;
-  color: #f7f7f7;
   outline: none;
   cursor: pointer;
   font-size: 15px;
@@ -326,14 +323,12 @@ export default {
 
 .server-detail-name {
   font-weight: bold;
-  color: #f7f7f7;
   font-size: 18px;
   letter-spacing: 1.5px;
   margin-bottom: 5px;
 }
 
 .server-detail {
-  color: #f7f7f7;
   font-size: 14px;
   letter-spacing: 1.5px;
 }
@@ -359,7 +354,6 @@ export default {
 }
 
 .server-play-btn-icon {
-  color: #f7f7f7;
   margin-left: -15px;
   transition: color 0.2s ease-in-out;
 }
@@ -371,7 +365,6 @@ export default {
 .server-play-btn-text {
   font-size: 20px;
   font-weight: bold;
-  color: #f7f7f7;
   letter-spacing: 1.5px;
   margin-top: 10px;
   transition: color 0.2s ease-in-out;
