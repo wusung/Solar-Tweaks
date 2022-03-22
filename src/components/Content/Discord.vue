@@ -22,8 +22,9 @@
               <div id="invite-content">
                 <div id="invite-icon-wrapper">
                   <img
-                    src="@/assets/logo-prod.svg"
+                    src="@/assets/logo.svg"
                     id="invite-icon"
+                    draggable="false"
                     alt="Solar Tweaks Logo"
                   />
                 </div>
@@ -122,10 +123,7 @@ export default {
 }
 
 #invite-icon {
-  /* Shoutouts to this codepen for generating the filter: https://codepen.io/sosuke/pen/Pjoqqp */
   width: 64px;
-  filter: invert(48%) sepia(43%) saturate(5519%) hue-rotate(336deg)
-    brightness(94%) contrast(93%);
 }
 
 #invite-layout {

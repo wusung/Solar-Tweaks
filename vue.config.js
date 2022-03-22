@@ -4,7 +4,7 @@ module.exports = {
       nodeIntegration: true,
       outputDir: 'dist',
       builderOptions: {
-        appId: 'com.solartweaks.solartweaks',
+        appId: 'com.solartweaks.launcher',
         productName: 'Solar Tweaks',
         win: {
           target: 'nsis',
@@ -13,20 +13,18 @@ module.exports = {
           verifyUpdateCodeSignature: true,
         },
         nsis: {
-          oneClick: false,
-          perMachine: false,
-          allowToChangeInstallationDirectory: true,
+          oneClick: true,
+          perMachine: true,
           installerIcon: 'build/icons/win/icon.ico',
           uninstallerIcon: 'build/icons/win/icon.ico',
           installerHeaderIcon: 'build/icons/win/icon.ico',
-          displayLanguageSelector: true,
           runAfterFinish: true,
         },
         linux: {
           target: 'AppImage',
           maintainer: 'Solar Tweaks',
           vendor: 'Solar Tweaks',
-          icon: 'build/icons/linux/icon.png',
+          icon: 'build/icons/linux/1024x1024.png',
           synopsis: 'Solar Tweaks',
           description: 'Solar Tweaks',
           category: 'Game',

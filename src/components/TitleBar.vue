@@ -2,9 +2,10 @@
   <div id="fixed-container">
     <div id="title-bar-container">
       <img
-        src="@/assets/logo.svg"
+        src="@/assets/logo-gray.svg"
         id="title-image"
         alt="Solar Tweaks Logo"
+        class="logo-white"
         height="50"
         width="50"
       />

@@ -2,7 +2,7 @@
   <div class="card">
     <div
       class="card-header"
-      :style="`background: url('${require(`@/assets/cards-backgrounds/${background}.png`)}')`"
+      :style="`background-image: url('${require(`@/assets/cards-backgrounds/${background}.png`)}')`"
     >
       <div class="card-header-container">
         <div class="card-title-container">
@@ -37,6 +37,8 @@ export default {
   height: 100px;
   border-top-right-radius: 15px;
   border-top-left-radius: 15px;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .card-header-container {

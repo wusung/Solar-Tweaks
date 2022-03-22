@@ -23,7 +23,6 @@
     "electron-settings": "^4.0.2",
     "extract-zip": "^2.0.1",
     "node-machine-id": "^1.1.12",
-    "update-electron-app": "^2.0.1",
     "utf-8-validate": "^5.0.7",
     "vue": "^3.0.0",
     "vuex": "^4.0.2"

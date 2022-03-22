@@ -1,12 +1,10 @@
 <template>
-  <Loader v-if="$store.getters.isAppLoading" />
   <TitleBar />
   <Content />
   <Footer />
 </template>
 
 <script>
-import Loader from './components/Loader.vue';
 import TitleBar from './components/TitleBar.vue';
 import Content from './components/Content.vue';
 import Footer from './components/Footer.vue';
@@ -20,7 +18,6 @@ export default {
   name: 'App',
 
   components: {
-    Loader,
     TitleBar,
     Content,
     Footer,
@@ -66,5 +63,12 @@ body {
 
 ::-webkit-scrollbar {
   display: none;
+}
+
+.logo-white {
+  /* Shoutouts to this codepen for generating the filter: https://codepen.io/sosuke/pen/Pjoqqp
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(265deg)
+    brightness(100%) contrast(105%); */
+  fill: aliceblue;
 }
 </style>

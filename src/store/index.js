@@ -2,7 +2,6 @@ import { createStore } from 'vuex';
 
 const store = createStore({
   state: {
-    isAppLoading: true,
     activeTab: 'Home',
     playContainerHeight: 300,
     isLaunching: false,
@@ -15,7 +14,6 @@ const store = createStore({
   },
 
   getters: {
-    isAppLoading: (state) => state.isAppLoading,
     getActiveTab: (state) => state.activeTab,
     getPlayContainerHeight: (state) => state.playContainerHeight,
     isLaunching: (state) => state.isLaunching,
@@ -23,9 +21,6 @@ const store = createStore({
   },
 
   mutations: {
-    setAppLoading(state, isAppLoading) {
-      state.isAppLoading = isAppLoading;
-    },
     setActiveTab(state, tab) {
       state.activeTab = tab;
     },
