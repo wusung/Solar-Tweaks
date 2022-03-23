@@ -87,6 +87,12 @@ export default {
         enabled: false,
       },
       {
+        name: "Always render cloth cloaks",
+        icon: "cloak.png",
+        internal: "clothCloaks",
+        enabled: false,
+      },
+      {
         name: 'Remove Pinned Servers',
         icon: 'pinned_servers.png',
         internal: 'metadata',
@@ -130,6 +136,12 @@ export default {
         name: 'Mantle Integration',
         icon: 'mantle.png',
         internal: 'mantleIntegration',
+        enabled: false,
+      },
+      {
+        name: 'Mantle/Cloaks+ cosmetics',
+        icon: 'mantle.png',
+        internal: "optifineItems",
         enabled: false,
       },
       {
@@ -269,6 +281,39 @@ export default {
         name: 'Options in Singleplayer',
         icon: 'cog.png',
         internal: 'lunarOptions',
+        enabled: false,
+      },
+      {
+        name: "Toggle Sneak in Container",
+        icon: "toggle_sprint.png",
+        internal: "toggleSneakContainer",
+        enabled: false,
+      },
+      {
+        name: "Change ping text",
+        icon: "ping.png",
+        internal: "pingText",
+        values: {
+          to: 'ms',
+        },
+        enabled: false,
+      },
+      {
+        name: "Change ping value",
+        icon: "ping.png",
+        internal: "pingSpoof",
+        values: {
+          pingValue: '100',
+        },
+        enabled: false,
+      },
+      {
+        name: "Adjust hurt cam",
+        icon: "toggle_sprint.png",
+        internal: "toggleSneakContainer",
+        values: {
+          multiplier: 0.3
+        },
         enabled: false,
       },
     ],
