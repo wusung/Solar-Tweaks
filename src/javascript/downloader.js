@@ -44,7 +44,13 @@ export async function downloadAndSaveFile(
   }
 
   if (fileType === 'text') {
-    await fs.writeFile(path, response.data, 'utf8');
+    await fs.writeFile(
+      path,
+      typeof response.data === 'object'
+        ? JSON.stringify(response.data)
+        : response.data,
+      'utf8'
+    );
     if (logging) logger.debug(`Saved to ${path}`);
     if (hash) {
       // eslint-disable-next-line no-unused-vars

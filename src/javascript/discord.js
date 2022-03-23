@@ -11,6 +11,8 @@ client.on('ready', async () => {
   await updateActivity('In the launcher');
 });
 
+client.isConnected = false;
+
 /**
  * Establish connection to Discord RPC
  */
@@ -20,6 +22,7 @@ export function login() {
     .then((client) => {
       if (client) {
         logger.info(`Authed for user ${client.user.username}`);
+        client.isConnected = true;
       } else console.error('Failed to login to Discord RPC');
     })
     .catch((error) => {
@@ -40,6 +43,7 @@ export async function updateActivity(
   timestamp = null,
   mode = null
 ) {
+  if (!client.isConnected) return;
   logger.info('Updating Discord activity');
   const activity = {
     details,

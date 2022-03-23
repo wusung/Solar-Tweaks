@@ -345,6 +345,27 @@ export async function checkPatcher() {
 }
 
 /**
+ * Check patcher config file (and download if needed)
+ * @returns {Promise<void>}
+ */
+export async function checkPatcherConfig() {
+  const configPath = join(
+    constants.DOTLUNARCLIENT,
+    'solartweaks',
+    constants.patcher.CONFIG
+  );
+  await stat(configPath).catch(async () => {
+    console.log('Creating config file');
+    await downloadAndSaveFile(
+      constants.patcher.CONFIG_EXAMPLE_URL,
+      configPath,
+      'text'
+    ).catch(console.error);
+    logger.info('Created default patcher config');
+  });
+}
+
+/**
  * Edit the `config.json` file for the Java Agent
  * @returns {Promise<void>}
  */
@@ -616,11 +637,18 @@ export async function checkAndLaunch(serverIp = null) {
     await downloadLunarAssets(metadata);
 
     // Check patcher
-    await checkPatcher().catch(() => {
+    await checkPatcher().catch(() =>
       logger.error(
         'Failed to check patcher, is GitHub down? Have we messed up while publishing the release? Skipping patcher check.'
-      );
-    });
+      )
+    );
+
+    // Patcher config
+    await checkPatcherConfig().catch(() =>
+      logger.error(
+        'Failed to check patcher config, is GitHub down? Have we messed up while publishing the release? Skipping patcher check.'
+      )
+    );
   }
 
   // Update patcher config file

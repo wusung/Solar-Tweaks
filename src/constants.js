@@ -19,6 +19,8 @@ export default {
     PATCHER: 'solar-patcher.jar',
     CONFIG: 'config.json',
     UPDATER: 'updater.json',
+    CONFIG_EXAMPLE_URL:
+      'https://raw.githubusercontent.com/Solar-Tweaks/SolarPatcher/main/config.example.json',
   },
   launcher: {
     UPDATER: 'updater.json',
