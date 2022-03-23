@@ -489,7 +489,7 @@ export async function getJavaArguments(
     )
     .catch((e) =>
       logger.warn(
-        `Launching the game without patcher; ${patcherPath} does not exist! ${e}`
+        `Not adding patcher in arguments; ${patcherPath} does not exist! ${e}`
       )
     );
 
