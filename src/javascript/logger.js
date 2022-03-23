@@ -1,4 +1,4 @@
-import fs from './fs';
+import fs from 'fs/promises';
 import { join } from 'path';
 import constants from '../constants';
 
@@ -9,16 +9,6 @@ export default class Logger {
   constructor(name) {
     this.name = name;
     this.logger = console;
-    (async () => {
-      if (!(await fs.exists(join(constants.DOTLUNARCLIENT, 'solartweaks'))))
-        await fs.mkdir(join(constants.DOTLUNARCLIENT, 'solartweaks'));
-      if (
-        !(await fs.exists(
-          join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs')
-        ))
-      )
-        await fs.mkdir(join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs'));
-    })();
   }
 
   debug(message, ...args) {

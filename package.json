@@ -1,7 +1,11 @@
 {
   "name": "solartweaks",
   "version": "4.0.0-dev",
-  "author": "RichardDorian",
+  "author": "SolarTweaks",
+  "contributors": [
+    "RichardDorian",
+    "770grappenmaker"
+  ],
   "license": "GPL-3.0",
   "repository": {
     "type": "git",

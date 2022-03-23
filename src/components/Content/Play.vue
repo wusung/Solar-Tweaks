@@ -122,8 +122,10 @@ export default {
      * Update the button title, message and icon
      */
     async updateLaunchButton() {
+      const version = await settings.get('version');
+      if (!version) return setTimeout(() => this.updateLaunchButton(), 150);
       this.$store.commit('setLaunchingState', {
-        title: `LAUNCH ${await settings.get('version')}`,
+        title: `LAUNCH ${version}`,
         message: 'READY TO LAUNCH',
         icon: 'fa-solid fa-gamepad',
       });

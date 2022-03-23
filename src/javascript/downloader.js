@@ -1,6 +1,6 @@
 import { createHash } from 'crypto';
 import axios from 'axios';
-import fs from './fs';
+import fs from 'fs/promises';
 import { createWriteStream } from 'fs';
 
 import Logger from './logger';
@@ -15,7 +15,6 @@ const logger = new Logger('downloader');
  * @param {'sha1'|'sha256'} [algorithm='sha1'] Hash algorithm to use
  * @param {boolean} [logging=true] Whether or not to log
  * @param {boolean} [skipFolderCheck=false] Whether or not to check if the folder exists
- * @returns {Promise<void>}
  */
 export async function downloadAndSaveFile(
   url,
@@ -26,61 +25,50 @@ export async function downloadAndSaveFile(
   logging = true,
   skipFolderCheck = false
 ) {
-  return new Promise((resolve, reject) => {
-    logger.info(`Downloading ${url}...`);
+  logger.info(`Downloading ${url}...`);
 
-    axios
-      .get(url, { responseType: fileType })
-      .then(async (response) => {
-        if (logging) {
-          logger.info(`Downloaded ${url}`);
-          logger.debug(`Saving to ${path}...`);
-        }
+  const response = await axios.get(url, { responseType: fileType });
 
-        if (!skipFolderCheck) {
-          const folderPath = path.includes('\\')
-            ? path.substring(0, path.lastIndexOf('\\'))
-            : path.substring(0, path.lastIndexOf('/'));
-          await fs.mkdir(folderPath, {
-            recursive: true,
-          });
-        }
+  if (logging) {
+    logger.info(`Downloaded ${url}`);
+    logger.debug(`Saving to ${path}...`);
+  }
 
-        if (fileType === 'text') {
-          fs.writeFile(path, response.data, 'utf8').then(async () => {
-            if (logging) logger.debug(`Saved to ${path}`);
+  if (!skipFolderCheck) {
+    const folderPath = path.includes('\\')
+      ? path.substring(0, path.lastIndexOf('\\'))
+      : path.substring(0, path.lastIndexOf('/'));
+    await fs.mkdir(folderPath, {
+      recursive: true,
+    });
+  }
 
-            if (hash) {
-              // eslint-disable-next-line no-unused-vars
-              const isMatching = await checkHash(path, hash, algorithm);
-              // Handle hash mismatch
-            }
+  if (fileType === 'text') {
+    await fs.writeFile(path, response.data, 'utf8');
+    if (logging) logger.debug(`Saved to ${path}`);
+    if (hash) {
+      // eslint-disable-next-line no-unused-vars
+      const isMatching = await checkHash(path, hash, algorithm);
+      // Handle hash mismatch
+    }
+  }
 
-            resolve();
-          });
-        }
+  if (fileType === 'blob') {
+    const output = createWriteStream(path);
+    const ws = new WritableStream(output);
 
-        if (fileType === 'blob') {
-          const output = createWriteStream(path);
-          const ws = new WritableStream(output);
+    let blob = new Blob([response.data], { type: 'application/zip' });
 
-          let blob = new Blob([response.data], { type: 'application/zip' });
+    /** @type {ReadableStream} */
+    const stream = blob.stream();
 
-          const stream = blob.stream();
-
-          stream.pipeTo(ws).then(async () => {
-            if (hash) {
-              // eslint-disable-next-line no-unused-vars
-              const isMatching = await checkHash(path, hash, algorithm);
-              // Handle hash mismatch
-            }
-
-            resolve();
-          });
-        }
-      })
-      .catch(reject);
-  });
+    await stream.pipeTo(ws);
+    if (hash) {
+      // eslint-disable-next-line no-unused-vars
+      const isMatching = await checkHash(path, hash, algorithm);
+      // Handle hash mismatch
+    }
+  }
 }
 
 /**
@@ -92,28 +80,20 @@ export async function downloadAndSaveFile(
  * @returns {Promise<boolean>}
  */
 export async function checkHash(path, hash, algorithm, logging = true) {
-  return new Promise((resolve) => {
-    if (logging) logger.debug(`Checking hash of ${path}...`);
+  if (logging) logger.debug(`Checking hash of ${path}...`);
 
-    fs.readFile(path)
-      .then((fileBuffer) => {
-        const hashSum = createHash(algorithm);
-        hashSum.update(fileBuffer);
-        const fileHash = hashSum.digest('hex');
-        if (fileHash !== hash) {
-          if (logging)
-            logger.error(
-              `Hash mismatch for ${path}\nExpected: ${hash}\nGot: ${fileHash}\nAlgorithm: ${algorithm}`
-            );
-          resolve(false);
-        } else {
-          if (logging) logger.debug(`Hash matches for ${path}`);
-          resolve(true);
-        }
-      })
-      .catch((error) => {
-        logger.error(`Failed to check hash for ${path}`, error);
-        resolve(false);
-      });
-  });
+  const fileBuffer = await fs.readFile(path);
+  const hashSum = createHash(algorithm);
+  hashSum.update(fileBuffer);
+  const fileHash = hashSum.digest('hex');
+  if (fileHash !== hash) {
+    if (logging)
+      logger.error(
+        `Hash mismatch for ${path}\nExpected: ${hash}\nGot: ${fileHash}\nAlgorithm: ${algorithm}`
+      );
+    return false;
+  } else {
+    if (logging) logger.debug(`Hash matches for ${path}`);
+    return true;
+  }
 }

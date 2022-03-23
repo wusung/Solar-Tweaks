@@ -13,9 +13,14 @@ export default {
   API_URL: 'https://api.solartweaks.com/api',
   SOLAR_PATCHER_GITHUB_API:
     'https://api.github.com/repos/Solar-Tweaks/SolarPatcher',
+  SOLAR_TWEAKS_GITHUB_API:
+    'https://api.github.com/repos/Solar-Tweaks/Solar-Tweaks',
   patcher: {
     PATCHER: 'solar-patcher.jar',
     CONFIG: 'config.json',
+    UPDATER: 'updater.json',
+  },
+  launcher: {
     UPDATER: 'updater.json',
   },
   DOTLUNARCLIENT:

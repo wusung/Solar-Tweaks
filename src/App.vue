@@ -9,10 +9,14 @@ import TitleBar from './components/TitleBar.vue';
 import Content from './components/Content.vue';
 import Footer from './components/Footer.vue';
 
+import { checkDirectory } from './javascript/directories';
+import constants from './constants';
 import { login } from './javascript/discord';
 import setupSettings from './javascript/settings';
 import { clearLogs } from './javascript/logger';
+import { checkForUpdates } from './javascript/updater';
 import { remote } from 'electron';
+import { join } from 'path';
 import './assets/global.css';
 
 export default {
@@ -25,11 +29,21 @@ export default {
   },
 
   async mounted() {
+    // Setup solartweaks folder
+    const directories = [[], ['solartweaks'], ['solartweaks', 'logs']];
+
+    for (const directory of directories) {
+      await checkDirectory(join(constants.DOTLUNARCLIENT, ...directory));
+    }
+
     // Clear logs file because new launch (or reload)
     await clearLogs();
 
     // Settings
     await setupSettings();
+
+    // Auto updater
+    await checkForUpdates();
 
     if (!navigator.onLine) {
       remote.dialog.showMessageBoxSync({

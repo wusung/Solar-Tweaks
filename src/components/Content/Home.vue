@@ -60,7 +60,7 @@ export default {
           'Hey guys! Our server got deleted so we created a new one! Learn more about the new features, and the new ecosystem we created!',
         author: 'Cy0ze',
         avatarUrl: 'https://cravatar.eu/avatar/Cy0ze',
-        url: 'https://discord.solartweaks.com',
+        url: 'https://discord.gg/SolarTweaks',
         button: {
           text: 'Join server',
           icon: 'fa-brands fa-discord',

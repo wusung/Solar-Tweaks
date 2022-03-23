@@ -8,7 +8,7 @@
       class="settings-card"
       contentClass="horizontal-card-container"
     >
-      <div class="settings-card-item settings-card-item-container" id="dirs-container">
+      <div class="settings-card-item settings-card-item-container">
         <CardItem
           icon="fa-regular fa-folder-open"
           title="Launch Directories"
@@ -24,7 +24,7 @@
             >
               <span class="settings-directories-item-version">{{
                 directory.version.length === 3
-                  ? "⠀" + directory.version
+                  ? '⠀' + directory.version
                   : directory.version
               }}</span>
               <input
@@ -34,7 +34,11 @@
                 @click="setNewDirectory(directory.version)"
               />
             </div>
-            <button class="button" @click="resetLaunchDirectories()">
+            <button
+              id="directory-reset-button"
+              class="button"
+              @click="resetLaunchDirectories()"
+            >
               <i class="fa-solid fa-arrow-rotate-right button-icon"></i>
               <span class="button-text">Reset to default</span>
             </button>
@@ -299,26 +303,26 @@
 </template>
 
 <script>
-import Card from "../Card/Card.vue";
-import CardItem from "../Card/CardItem.vue";
+import Card from '../Card/Card.vue';
+import CardItem from '../Card/CardItem.vue';
 
-import { remote } from "electron";
-import settings from "electron-settings";
-import { totalmem, platform } from "os";
-import { join } from "path";
-import { defaultSettings } from "../../javascript/settings";
-import axios from "axios";
-import { cache } from "../../main";
+import { remote } from 'electron';
+import settings from 'electron-settings';
+import { totalmem, platform } from 'os';
+import { join } from 'path';
+import { defaultSettings } from '../../javascript/settings';
+import axios from 'axios';
+import { cache } from '../../main';
 import {
   downloadJre as _downloadJre,
   removeJre as _removeJre,
-} from "../../javascript/jreDownloader";
-import Logger from "../../javascript/logger";
-import constants from "../../constants";
-const logger = new Logger("settings");
+} from '../../javascript/jreDownloader';
+import Logger from '../../javascript/logger';
+import constants from '../../constants';
+const logger = new Logger('settings');
 
 export default {
-  name: "Settings",
+  name: 'Settings',
 
   components: {
     Card,
@@ -337,35 +341,32 @@ export default {
       height: 480,
     },
     actions: [
-      { name: "Close Launcher", id: "close" },
-      { name: "Hide Launcher", id: "hide" },
-      { name: "Keep Launcher Open", id: "keep" },
+      { name: 'Close Launcher', id: 'close' },
+      { name: 'Hide Launcher', id: 'hide' },
+      { name: 'Keep Launcher Open', id: 'keep' },
     ],
-    actionAfterLaunch: "close",
-    jvmArguments: "",
+    actionAfterLaunch: 'close',
+    jvmArguments: '',
     jvmArgumentsPresetsVisible: false,
     jvmArgumentsPresets: [
       {
-        name: "Default",
-        args: "-Xms1G -Xmx1G -Xmn768m -XX:+DisableAttachMechanism",
+        name: 'Default',
+        args: '-Xms1G -Xmx1G -Xmn768m -XX:+DisableAttachMechanism',
       },
       {
-        name: "Zulu optimized 1",
-        args:
-          "-Xms3G -Xmx3G -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
+        name: 'Zulu optimized 1',
+        args: '-Xms3G -Xmx3G -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
       },
       {
-        name: "Zulu optimized 2",
-        args:
-          "-XX:+UseG1GC -Xmx3G -Xms3G -Xmn1G -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M",
+        name: 'Zulu optimized 2',
+        args: '-XX:+UseG1GC -Xmx3G -Xms3G -Xmn1G -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
       },
       {
-        name: "GraalVM",
-        args:
-          "-Xms3G -Xmx3G -Xmn1G -XX:+DisableAttachMechanism -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -XX:+EnableJVMCI -XX:+UseJVMCICompiler -XX:+EagerJVMCI -Djvmci.Compiler=graal",
+        name: 'GraalVM',
+        args: '-Xms3G -Xmx3G -Xmn1G -XX:+DisableAttachMechanism -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -XX:+EnableJVMCI -XX:+UseJVMCICompiler -XX:+EagerJVMCI -Djvmci.Compiler=graal',
       },
     ],
-    jrePath: "",
+    jrePath: '',
     debugMode: false,
     skipChecks: false,
     // Enabled by default because a lot of people are on Windows
@@ -373,41 +374,37 @@ export default {
     availableJres: {
       Temurin: {
         32: {
-          url:
-            "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x86-32_windows_hotspot_17.0.1_12.zip",
+          url: 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x86-32_windows_hotspot_17.0.1_12.zip',
           checksum:
-            "f4bb1323cb34cdb42b92d825fe36fddd78b274f071b8971c5207a66a0e82748a",
-          folder: "jdk-17.0.1+12-jre",
+            'f4bb1323cb34cdb42b92d825fe36fddd78b274f071b8971c5207a66a0e82748a',
+          folder: 'jdk-17.0.1+12-jre',
         },
         64: {
-          url:
-            "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jre_x64_windows_hotspot_17.0.2_8.zip",
+          url: 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.2%2B8/OpenJDK17U-jre_x64_windows_hotspot_17.0.2_8.zip',
           checksum:
-            "c3204a19aede95ed02ad0f427210855a951d845ab7f806fb56b774daf2572454",
-          folder: "jdk-17.0.2+8-jre",
+            'c3204a19aede95ed02ad0f427210855a951d845ab7f806fb56b774daf2572454',
+          folder: 'jdk-17.0.2+8-jre',
         },
-        name: "Temurin",
+        name: 'Temurin',
       },
       Zulu: {
         32: {
-          url:
-            "https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_i686.zip",
+          url: 'https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_i686.zip',
           checksum:
-            "cb86ffb1232dfa77d6a538b4438877721180388716b7cf7403afd04dd9934ce1",
-          folder: "zulu17.32.13-ca-jre17.0.2-win_i686",
+            'cb86ffb1232dfa77d6a538b4438877721180388716b7cf7403afd04dd9934ce1',
+          folder: 'zulu17.32.13-ca-jre17.0.2-win_i686',
         },
         64: {
-          url:
-            "https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_x64.zip",
+          url: 'https://cdn.azul.com/zulu/bin/zulu17.32.13-ca-jre17.0.2-win_x64.zip',
           checksum:
-            "a8f31891c563890c65ac20ff52906f16891a62d7bb497e389964153205cfd588",
-          folder: "zulu17.32.13-ca-jre17.0.2-win_x64",
+            'a8f31891c563890c65ac20ff52906f16891a62d7bb497e389964153205cfd588',
+          folder: 'zulu17.32.13-ca-jre17.0.2-win_x64',
         },
-        name: "Zulu",
+        name: 'Zulu',
       },
     },
     downloadedJres: [],
-    downloadingJre: "",
+    downloadingJre: '',
   }),
 
   methods: {
@@ -422,14 +419,14 @@ export default {
       const folder = await remote.dialog.showOpenDialog({
         title: `Select the new directory for Lunar Client ${version}`,
         defaultPath: this.directories[directoryIndex].path,
-        properties: ["dontAddToRecent", "openDirectory"],
+        properties: ['dontAddToRecent', 'openDirectory'],
       });
 
       if (folder.canceled) return;
 
       this.directories[directoryIndex].path = folder.filePaths[0];
 
-      await settings.set("launchDirectories", this.directories);
+      await settings.set('launchDirectories', this.directories);
     },
 
     /**
@@ -437,14 +434,14 @@ export default {
      */
     async resetLaunchDirectories() {
       this.directories = defaultSettings.launchDirectories;
-      await settings.set("launchDirectories", this.directories);
+      await settings.set('launchDirectories', this.directories);
     },
 
     /**
      * Update the allocated memory for the game
      */
     async updateRam() {
-      await settings.set("ram", this.ram.current);
+      await settings.set('ram', this.ram.current);
     },
 
     /**
@@ -453,7 +450,7 @@ export default {
     async updateResolution() {
       if (!this.resolution.width) this.resolution.width = 854;
       if (!this.resolution.height) this.resolution.height = 480;
-      await settings.set("resolution", this.resolution);
+      await settings.set('resolution', this.resolution);
     },
 
     /**
@@ -462,7 +459,7 @@ export default {
      */
     async updateActionAfterLaunch(action) {
       this.actionAfterLaunch = action;
-      await settings.set("actionAfterLaunch", action);
+      await settings.set('actionAfterLaunch', action);
     },
 
     /**
@@ -473,7 +470,7 @@ export default {
         this.jvmArgumentsPresetsVisible = false;
         this.jvmArguments = newArguments;
       }
-      await settings.set("jvmArguments", this.jvmArguments);
+      await settings.set('jvmArguments', this.jvmArguments);
     },
 
     /**
@@ -483,14 +480,14 @@ export default {
       const folder = await remote.dialog.showOpenDialog({
         title: `Select the new JRE for Lunar Client (Select the bin folder)`,
         defaultPath: this.jrePath,
-        properties: ["dontAddToRecent", "openDirectory"],
+        properties: ['dontAddToRecent', 'openDirectory'],
       });
 
       if (folder.canceled) return;
 
       this.jrePath = folder.filePaths[0];
 
-      await settings.set("jrePath", this.jrePath);
+      await settings.set('jrePath', this.jrePath);
     },
 
     /**
@@ -498,28 +495,28 @@ export default {
      */
     async resetJrePath() {
       this.jrePath = defaultSettings.jrePath;
-      await settings.set("jrePath", defaultSettings.jrePath);
+      await settings.set('jrePath', defaultSettings.jrePath);
     },
 
     /**
      * Update the debug mode
      */
     async updateDebugMode() {
-      await settings.set("debugMode", this.debugMode);
+      await settings.set('debugMode', this.debugMode);
     },
 
     /**
      * Update the skip checks
      */
     async updateSkipChecks() {
-      await settings.set("skipChecks", this.skipChecks);
+      await settings.set('skipChecks', this.skipChecks);
     },
 
     /**
      * Update downloaded JREs
      */
     async updateDownloadedJres() {
-      await settings.set("downloadedJres", this.downloadedJres);
+      await settings.set('downloadedJres', this.downloadedJres);
     },
 
     /**
@@ -528,12 +525,12 @@ export default {
     async applyJre(jrePath) {
       this.jrePath = join(
         constants.DOTLUNARCLIENT,
-        "solartweaks",
-        "jres",
+        'solartweaks',
+        'jres',
         jrePath,
-        "bin"
+        'bin'
       );
-      await settings.set("jrePath", this.jrePath);
+      await settings.set('jrePath', this.jrePath);
     },
 
     /**
@@ -550,7 +547,7 @@ export default {
         this.updateDownloadedJres();
       }
 
-      this.downloadingJre = "";
+      this.downloadingJre = '';
       this.jreDownloaderEnabled = true;
     },
 
@@ -565,31 +562,31 @@ export default {
   },
 
   async beforeMount() {
-    this.directories = await settings.get("launchDirectories");
-    this.ram.current = await settings.get("ram");
-    this.resolution = await settings.get("resolution");
-    this.actionAfterLaunch = await settings.get("actionAfterLaunch");
-    this.jvmArguments = await settings.get("jvmArguments");
-    this.jrePath = await settings.get("jrePath");
-    this.debugMode = await settings.get("debugMode");
-    this.skipChecks = await settings.get("skipChecks");
-    this.downloadedJres = await settings.get("downloadedJres");
+    this.directories = await settings.get('launchDirectories');
+    this.ram.current = await settings.get('ram');
+    this.resolution = await settings.get('resolution');
+    this.actionAfterLaunch = await settings.get('actionAfterLaunch');
+    this.jvmArguments = await settings.get('jvmArguments');
+    this.jrePath = await settings.get('jrePath');
+    this.debugMode = await settings.get('debugMode');
+    this.skipChecks = await settings.get('skipChecks');
+    this.downloadedJres = await settings.get('downloadedJres');
 
-    if (platform() !== "win32") this.jreDownloaderEnabled = false;
+    if (platform() !== 'win32') this.jreDownloaderEnabled = false;
 
-    if (cache.has("availableJres"))
-      return (this.availableJres = cache.get("availableJres"));
+    if (cache.has('availableJres'))
+      return (this.availableJres = cache.get('availableJres'));
 
     await axios
       .get(`${constants.API_URL}/launcher/jreDownloader`)
       .then((response) => {
-        cache.set("availableJres", response.data);
+        cache.set('availableJres', response.data);
         this.availableJres = response.data;
       })
       .catch(() => {
-        cache.set("availableJres", this.availableJres);
+        cache.set('availableJres', this.availableJres);
         logger.warn(
-          "Failed to fetch available JREs, falling back to hardcoded data..."
+          'Failed to fetch available JREs, falling back to hardcoded data...'
         );
       });
   },
@@ -675,14 +672,6 @@ export default {
   flex-direction: column;
 }
 
-#dirs-container {
-  flex: 1.2 0 0px;
-}
-
-.dirs-card-item {
-  margin: 0;
-}
-
 #settings-directories {
   margin-top: 20px;
   display: flex;
@@ -705,6 +694,10 @@ export default {
 
 .settings-directories-input {
   flex: 1 1 0px;
+}
+
+#directory-reset-button {
+  margin-top: 15px;
 }
 
 .directories-card-item {
