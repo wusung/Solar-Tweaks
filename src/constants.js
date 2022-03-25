@@ -10,7 +10,7 @@ export default {
     SERVER_STATUS_ENDPOINT: 'https://mcapi.us/server/status',
     LC_METADATA_ENDPOINT: 'https://api.lunarclientprod.com/launcher/launch',
   },
-  API_URL: 'https://api.solartweaks.com/api',
+  API_URL: 'https://server.solartweaks.com/api',
   SOLAR_PATCHER_GITHUB_API:
     'https://api.github.com/repos/Solar-Tweaks/SolarPatcher',
   SOLAR_TWEAKS_GITHUB_API:
