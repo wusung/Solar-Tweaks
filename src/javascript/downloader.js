@@ -2,6 +2,7 @@ import { createHash } from 'crypto';
 import axios from 'axios';
 import fs from 'fs/promises';
 import { createWriteStream } from 'fs';
+// import { DownloaderHelper } from 'node-downloader-helper';
 
 import Logger from './logger';
 const logger = new Logger('downloader');
