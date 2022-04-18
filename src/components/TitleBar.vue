@@ -71,10 +71,6 @@ export default {
         name: 'About',
         active: false,
       },
-      {
-        name: 'Discord',
-        active: false,
-      },
     ],
   }),
 

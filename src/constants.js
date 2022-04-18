@@ -15,7 +15,7 @@ export default {
     'https://api.github.com/repos/Solar-Tweaks/SolarPatcher',
   SOLAR_TWEAKS_GITHUB_API:
     'https://api.github.com/repos/Solar-Tweaks/Solar-Tweaks',
-  patcher: {
+  PATCHER: {
     PATCHER: 'solar-patcher.jar',
     CONFIG: 'config.json',
     UPDATER: 'updater.json',
@@ -25,7 +25,8 @@ export default {
   UPDATERS: {
     INDEX: '/updater/index',
     LAUNCHER: '/updater/?item=launcher&version={version}',
+    PATCHER: '/updater/?item=patcher&version={version}',
   },
 
-  DOTLUNARCLIENT: join(homedir(), 'lunarclient'),
+  DOTLUNARCLIENT: join(homedir(), '.lunarclient'),
 };

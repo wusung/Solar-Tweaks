@@ -87,9 +87,9 @@ export default {
         enabled: false,
       },
       {
-        name: "Always render cloth cloaks",
-        icon: "cloak.png",
-        internal: "clothCloaks",
+        name: 'Always render cloth cloaks',
+        icon: 'cloak.png',
+        internal: 'clothCloaks',
         enabled: false,
       },
       {
@@ -130,18 +130,6 @@ export default {
         name: 'Remove Hit Delay',
         icon: 'hit_delay.png',
         internal: 'noHitDelay',
-        enabled: false,
-      },
-      {
-        name: 'Mantle Integration',
-        icon: 'mantle.png',
-        internal: 'mantleIntegration',
-        enabled: false,
-      },
-      {
-        name: 'Mantle/Cloaks+ cosmetics',
-        icon: 'mantle.png',
-        internal: "optifineItems",
         enabled: false,
       },
       {
@@ -284,36 +272,72 @@ export default {
         enabled: false,
       },
       {
-        name: "Toggle Sneak in Container",
-        icon: "toggle_sprint.png",
-        internal: "toggleSneakContainer",
+        name: 'Toggle Sneak in Container',
+        icon: 'toggle_sprint.png',
+        internal: 'toggleSneakContainer',
         enabled: false,
       },
       {
-        name: "Change ping text",
-        icon: "ping.png",
-        internal: "pingText",
+        name: 'Change ping text',
+        icon: 'ping.png',
+        internal: 'pingText',
         values: {
           to: 'ms',
         },
         enabled: false,
       },
       {
-        name: "Change ping value",
-        icon: "ping.png",
-        internal: "pingSpoof",
+        name: 'Change ping value',
+        icon: 'ping.png',
+        internal: 'pingSpoof',
         values: {
           pingValue: '100',
         },
         enabled: false,
       },
       {
-        name: "Adjust hurt cam",
-        icon: "toggle_sprint.png",
-        internal: "toggleSneakContainer",
+        name: 'Adjust hurt cam',
+        icon: 'toggle_sprint.png',
+        internal: 'hurtCamShake',
         values: {
-          multiplier: 0.3
+          multiplier: 0.3,
         },
+        enabled: false,
+      },
+      {
+        name: 'Remove chat limit',
+        icon: 'chat.png',
+        internal: 'chatLimit',
+        values: {
+          limit: 255,
+        },
+        enabled: false,
+      },
+      {
+        name: 'Mumble fix',
+        icon: 'mumble.png',
+        internal: 'mumble',
+        enabled: false,
+      },
+      {
+        name: 'Websocket',
+        icon: 'websocket.png',
+        internal: 'websocket',
+        values: {
+          to: 'wss://assetserver.lunarclientprod.com/connect',
+        },
+        enabled: false,
+      },
+      {
+        name: 'Show wrapped',
+        icon: 'wrapped.png',
+        internal: 'enableWrapped',
+        enabled: false,
+      },
+      {
+        name: 'Cloaks+',
+        icon: 'cloaks.png',
+        internal: 'cloaksPlus',
         enabled: false,
       },
     ],

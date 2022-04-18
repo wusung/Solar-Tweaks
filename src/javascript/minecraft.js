@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import store from '../store';
 import { machineId as _machineId } from 'node-machine-id';
 import extractZip from 'extract-zip';
@@ -294,54 +294,34 @@ export async function checkPatcher() {
   });
 
   const release = await axios
-    .get(`${constants.SOLAR_PATCHER_GITHUB_API}/releases?per_page=1`)
+    .get(`${constants.API_URL}${constants.UPDATERS.INDEX}`)
     .catch((reason) => {
-      logger.error('Failed to fetch patcher metadata', reason);
+      logger.error('Failed to fetch updater index', reason);
     });
-  const updaterFile = release.data[0].assets.find(
-    (asset) => asset.name === constants.patcher.UPDATER
+
+  const patcherVer = await settings.get('patcherVersion');
+  const latestVer = release.data.index.stable.patcher;
+
+  if (patcherVer === latestVer)
+    return logger.info(`Patcher is up to date ${patcherVer}`);
+
+  const patcherPath = join(
+    constants.DOTLUNARCLIENT,
+    'solartweaks',
+    'solar-patcher.jar'
   );
 
   await downloadAndSaveFile(
-    updaterFile.browser_download_url,
-    join(constants.DOTLUNARCLIENT, 'solartweaks', 'updater-patcher.json'),
+    `${constants.API_URL}${constants.UPDATERS.PATCHER.replace(
+      '{version}',
+      release.data.index.stable.patcher
+    )}`,
+    patcherPath,
     'blob'
-  ).catch((reason) => {
-    logger.error('Failed to download patcher', reason);
-  });
-
-  const updater = JSON.parse(
-    await fs
-      .readFile(
-        join(constants.DOTLUNARCLIENT, 'solartweaks', 'updater-patcher.json')
-      )
-      .catch((reason) => {
-        logger.error('Failed to read patcher file', reason);
-      })
   );
 
-  if (await settings.has('patcherVersion')) {
-    if (updater.version === (await settings.get('patcherVersion'))) {
-      logger.debug('Patcher is up to date');
-      return;
-    }
-  }
-
-  const patcherFile = release.data[0].assets.find(
-    (asset) => asset.name === updater.fileName
-  );
-
-  await downloadAndSaveFile(
-    patcherFile.browser_download_url,
-    join(constants.DOTLUNARCLIENT, 'solartweaks', constants.patcher.PATCHER),
-    'blob',
-    updater.sha1,
-    'sha1'
-  ).catch((reason) => {
-    logger.error('Failed to download patcher', reason);
-  });
-
-  await settings.set('patcherVersion', updater.version);
+  logger.info(`Patcher updated to ${latestVer}`);
+  await settings.set('patcherVersion', latestVer);
 }
 
 /**
@@ -352,12 +332,12 @@ export async function checkPatcherConfig() {
   const configPath = join(
     constants.DOTLUNARCLIENT,
     'solartweaks',
-    constants.patcher.CONFIG
+    constants.PATCHER.CONFIG
   );
   await stat(configPath).catch(async () => {
     console.log('Creating config file');
     await downloadAndSaveFile(
-      constants.patcher.CONFIG_EXAMPLE_URL,
+      constants.PATCHER.CONFIG_EXAMPLE_URL,
       configPath,
       'text'
     ).catch(console.error);
@@ -381,7 +361,7 @@ export async function patchGame() {
   const filePath = join(
     constants.DOTLUNARCLIENT,
     'solartweaks',
-    constants.patcher.CONFIG
+    constants.PATCHER.CONFIG
   );
 
   logger.debug(`Reading ${filePath}`);
@@ -456,14 +436,14 @@ export async function getJavaArguments(
   const nativesArgument = args.findIndex((value) => value.includes('natives'));
   args[nativesArgument] = args[nativesArgument].replace(
     'natives',
-    `"${natives}"`
+    `${natives}`
   );
 
   let version = await settings.get('version');
   if (overrideVersion) version = overrideVersion;
 
   const lunarJarFile = async (filename) =>
-    `"${join(constants.DOTLUNARCLIENT, 'offline', version, filename)}"`;
+    `${join(constants.DOTLUNARCLIENT, 'offline', version, filename)}`;
 
   const gameDir = (await settings.get('launchDirectories')).find(
     (directory) => directory.version === version
@@ -473,18 +453,18 @@ export async function getJavaArguments(
   const patcherPath = join(
     constants.DOTLUNARCLIENT,
     'solartweaks',
-    constants.patcher.PATCHER
+    constants.PATCHER.PATCHER
   );
 
   // Make sure the patcher exists, or else the game will crash (jvm init error)
   stat(patcherPath)
     .then(() =>
       args.push(
-        `-javaagent:"${patcherPath}"="${join(
+        `-javaagent:${patcherPath}=${join(
           constants.DOTLUNARCLIENT,
           'solartweaks',
-          constants.patcher.CONFIG
-        )}"`
+          constants.PATCHER.CONFIG
+        )}`
       )
     )
     .catch((e) =>
@@ -494,10 +474,11 @@ export async function getJavaArguments(
     );
 
   args.push(
-    await settings.get('jvmArguments'),
+    ...(await settings.get('jvmArguments')).split(' '),
     `-Xmx${await settings.get('ram')}m`,
-    `-Djava.library.path="${natives}"`,
-    `-cp ${await lunarJarFile(
+    `-Djava.library.path=${natives}`,
+    '-cp',
+    `${await lunarJarFile(
       'lunar-assets-prod-1-optifine.jar'
     )};${await lunarJarFile(
       'lunar-assets-prod-2-optifine.jar'
@@ -518,18 +499,18 @@ export async function getJavaArguments(
     '--userProperties',
     '{}',
     '--gameDir',
-    `"${gameDir}"`,
+    `${gameDir}`,
     // '--assetsDir',
     // `"${join(gameDir, 'assets')}"`,
     '--texturesDir',
-    `"${join(constants.DOTLUNARCLIENT, 'textures')}"`,
+    `${join(constants.DOTLUNARCLIENT, 'textures')}`,
     '--width',
     resolution.width,
     '--height',
     resolution.height
   );
 
-  if (serverIp) args.push('--server', `"${serverIp}"`);
+  if (serverIp) args.push('--server', `${serverIp}`);
 
   return args;
 }
@@ -550,16 +531,18 @@ export async function launchGame(metadata, serverIp = null) {
 
   const args = await getJavaArguments(metadata, serverIp);
 
-  logger.debug(`Launching game with args: ${args.join(' ')}`);
+  logger.debug('Launching game with args', args);
 
-  const process = await exec(
-    `"${join(await settings.get('jrePath'), 'javaw')}" ${args.join(' ')}`,
+  const process = await spawn(
+    join(await settings.get('jrePath'), 'javaw'),
+    args,
     {
       cwd: join(
         constants.DOTLUNARCLIENT,
         'offline',
         await settings.get('version')
       ),
+      detached: true,
     }
   );
 
