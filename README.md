@@ -1,5 +1,4 @@
 # Solar Tweaks ☀️
-![Discord](https://img.shields.io/discord/930481786797064242?color=404eed&logo=discord&logoColor=%23fff&style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/Solar-Tweaks/Solar-Tweaks?style=for-the-badge)
 ![GitHub all releases](https://img.shields.io/github/downloads/Solar-Tweaks/Solar-Tweaks/total?style=for-the-badge)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/Solar-Tweaks/Solar-Tweaks?style=for-the-badge)
@@ -10,9 +9,11 @@ Solar Tweaks is a software that allows you to tweak Lunar Client to your liking 
 However, SolarTweaks is to use at your own risk. Editing Lunar Client source code is not allowed! You can read Lunar Client's Terms of Service [here](https://www.lunarclient.com/terms). We are not responsible for **any** damage caused by using Solar Tweaks.
 
 # Dear Lunar Client (Moonsworth) 🌙
-You probably won't like this project (just like the rest of our projects). This software is free software, do anything you want with the code, shamelessly reuse it, do whatever you want, we don't care. Our only goal is to improve the experience of players. Maybe take our modules as an example, and see if you can improve your UX (not gonna lie, your launcher and modpack both miss some important features). We are not saying that our launcher is perfect (nothing is perfect anyway), but we are really trying to make it as good as possible, to improve our user experience.
+~~You probably won't like this project (just like the rest of our projects). This software is free software, do anything you want with the code, shamelessly reuse it, do whatever you want, we don't care. Our only goal is to improve the experience of players. Maybe take our modules as an example, and see if you can improve your UX (not gonna lie, your launcher and modpack both miss some important features). We are not saying that our launcher is perfect (nothing is perfect anyway), but we are really trying to make it as good as possible, to improve our user experience.~~
 
-*Please don't sue us, there is no need to* 💖
+~~*Please don't sue us, there is no need to* 💖~~
+
+Let's stop lying and be honest. We stopped everything you didn't like (here we mean cosmetics) now fuck you we won't cooperate anymore.
 
 # Installing ⬇️
 You can download the latest version of Solar Tweaks from the [GitHub releases page](https://github.com/Solar-Tweaks/Solar-Tweaks/releases). You need to download the version corresponding to your operating system (OS).
