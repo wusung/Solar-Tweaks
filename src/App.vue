@@ -43,7 +43,7 @@ export default {
     await setupSettings();
 
     // Auto updater
-    await checkForUpdates();
+    checkForUpdates(); // No await because running in background
 
     if (!navigator.onLine) {
       remote.dialog.showMessageBoxSync({

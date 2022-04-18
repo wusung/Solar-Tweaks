@@ -11,26 +11,26 @@ export default class Logger {
     this.logger = console;
   }
 
-  debug(message, ...args) {
-    const x = `[${this.name}] ${message}`;
+  debug(...args) {
+    const x = `[${this.name}]`;
     this.logger.debug(x, ...args);
     this.writeLog(`[DEBUG] ${x}`);
   }
 
-  info(message, ...args) {
-    const x = `[${this.name}] ${message}`;
+  info(...args) {
+    const x = `[${this.name}]`;
     this.logger.info(x, ...args);
     this.writeLog(`[INFO] ${x}`);
   }
 
-  warn(message, ...args) {
-    const x = `[${this.name}] ${message}`;
+  warn(...args) {
+    const x = `[${this.name}]`;
     this.logger.warn(x, ...args);
     this.writeLog(`[WARN] ${x}`);
   }
 
-  error(message, ...args) {
-    const x = `[${this.name}] ${message}`;
+  error(...args) {
+    const x = `[${this.name}]`;
     this.logger.error(x, ...args);
     this.writeLog(`[ERROR] ${x}`);
   }

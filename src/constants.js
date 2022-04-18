@@ -1,4 +1,4 @@
-import * as process from 'process';
+import { homedir } from 'os';
 import { join } from 'path';
 
 export default {
@@ -22,11 +22,10 @@ export default {
     CONFIG_EXAMPLE_URL:
       'https://raw.githubusercontent.com/Solar-Tweaks/SolarPatcher/main/config.example.json',
   },
-  launcher: {
-    UPDATER: 'updater.json',
+  UPDATERS: {
+    INDEX: '/updater/index',
+    LAUNCHER: '/updater/?item=launcher&version={version}',
   },
-  DOTLUNARCLIENT:
-    process.platform === 'win32'
-      ? join(process.env.USERPROFILE, '.lunarclient')
-      : join(process.env.HOME, '.lunarclient'),
+
+  DOTLUNARCLIENT: join(homedir(), 'lunarclient'),
 };
