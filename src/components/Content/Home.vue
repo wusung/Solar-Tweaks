@@ -191,7 +191,9 @@ export default {
 .post-author-avatar {
   width: 18px;
   height: 18px;
-  margin-right: 3px;
+  margin-right: 4px;
+  margin-left: 3px;
+  vertical-align: text-bottom;
 }
 
 .post-author {

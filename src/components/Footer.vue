@@ -1,13 +1,15 @@
 <template>
   <div id="footer-container">
-    <img
-      src="@/assets/logo-gray.svg"
-      id="footer-image"
-      alt="Solar Tweaks Logo"
-    />
-    <h4 id="solartweaks-text" class="footer-text">
-      Solar Tweaks • {{ version }}
-    </h4>
+    <div id="solar-tweaks-container">
+      <img
+        src="@/assets/logo-gray.svg"
+        id="footer-image"
+        alt="Solar Tweaks Logo"
+      />
+      <h4 id="solartweaks-text" class="footer-text">
+        Solar Tweaks • {{ version }}
+      </h4>
+    </div>
     <div id="links-container">
       <ul id="links">
         <li
@@ -20,9 +22,9 @@
         </li>
       </ul>
     </div>
-    <h4 id="mojang-disclaimer" class="footer-text">
-      Not affiliated with Mojang, AB.
-    </h4>
+    <div id="mojang-disclaimer-container">
+      <h4 class="footer-text">Not affiliated with Mojang, AB.</h4>
+    </div>
   </div>
 </template>
 
@@ -43,6 +45,10 @@ export default {
       {
         icon: 'fa-brands fa-github',
         url: constants.links.GITHUB,
+      },
+      {
+        icon: 'fa-solid fa-comments',
+        url: constants.links.GH_DISCUSSIONS,
       },
     ],
   }),
@@ -70,6 +76,10 @@ export default {
   z-index: 10;
 }
 
+#solar-tweaks-container {
+  display: flex;
+}
+
 #footer-container > * {
   margin-top: auto;
   margin-bottom: auto;
@@ -88,10 +98,13 @@ export default {
 
 #solartweaks-text {
   margin-left: 10px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 #links-container {
-  margin-left: 375px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #links {
@@ -109,9 +122,8 @@ export default {
   cursor: pointer;
 }
 
-#mojang-disclaimer {
-  position: absolute;
-  right: 15px;
-  top: 15px;
+#mojang-disclaimer-container {
+  justify-self: right;
+  margin-right: 15px;
 }
 </style>

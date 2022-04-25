@@ -1,7 +1,7 @@
 import settings from 'electron-settings';
+import { join } from 'path';
 import * as process from 'process';
 import { platform } from 'process';
-import { join } from 'path';
 import Logger from './logger';
 const logger = new Logger('settings');
 
@@ -100,11 +100,6 @@ export const defaultSettings = {
     { name: 'Lunar Network', ip: 'lunar.gg', background: 1 },
     { name: 'ViperMC', ip: 'play.vipermc.net', background: 5 },
     { name: 'BWHub', ip: 'bwhub.net', background: 4 },
-    {
-      name: 'Solar Tweaks Verification',
-      ip: 'mc.solartweaks.com:8088',
-      background: 2,
-    },
   ],
   customizations: [],
   version: '1.8',

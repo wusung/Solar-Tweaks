@@ -139,7 +139,7 @@ export default {
         values: {
           to: 'Lunar Client (Modded by Solar Tweaks)',
         },
-        enabled: false,
+        enabled: true,
       },
       {
         name: 'Remove Mods Packet',
@@ -356,7 +356,7 @@ export default {
      * @param {string} str String to convert
      */
     convertToDisplayableString(str) {
-      if (str === 'to') return 'Text to change';
+      if (str === 'to') return 'Text';
       return str
         .split('_')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
