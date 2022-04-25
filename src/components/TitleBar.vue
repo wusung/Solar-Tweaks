@@ -23,16 +23,18 @@
           </li>
         </ul>
       </div>
-      <button
-        class="titlebar-button"
-        id="shortcut-btn"
-        @click="createShortcut()"
-      >
-        <i class="fa-solid fa-share-from-square titlebar-button-icon"></i>
-      </button>
-      <button class="titlebar-button" id="close-btn" @click="closeWindow()">
-        <i class="fa-solid fa-xmark fa-2x titlebar-button-icon"></i>
-      </button>
+      <div id="button-container">
+        <button
+          class="titlebar-button"
+          id="shortcut-btn"
+          @click="createShortcut()"
+        >
+          <i class="fa-solid fa-share-from-square titlebar-button-icon"></i>
+        </button>
+        <button class="titlebar-button" id="close-btn" @click="closeWindow()">
+          <i class="fa-solid fa-xmark fa-2x titlebar-button-icon"></i>
+        </button>
+      </div>
     </div>
   </div>
   <CreateShortcut />
@@ -154,7 +156,8 @@ export default {
 }
 
 #nav-container {
-  margin-left: 70px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 #nav {
@@ -201,6 +204,10 @@ export default {
   border-radius: 3px;
   transition: background-color 0.5s ease-out;
   position: absolute;
+}
+
+#button-container {
+  width: 150px;
 }
 
 #shortcut-btn {

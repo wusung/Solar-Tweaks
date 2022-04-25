@@ -3,7 +3,7 @@ import { join } from 'path';
 
 export default {
   links: {
-    DISCORD: 'https://discord.gg/SolarTweaks',
+    GH_DISCUSSIONS: 'https://github.com/orgs/Solar-Tweaks/discussions',
     GITHUB: 'https://github.com/Solar-Tweaks/',
     YOUTUBE: 'https://www.youtube.com/channel/UCDRSsAqDsCs2GYfvy2xilWw',
     LUNARCLIENT: 'https://lunarclient.com/',

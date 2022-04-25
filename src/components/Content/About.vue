@@ -27,17 +27,17 @@
         </CardItem>
         <div id="little-cards">
           <CardItem
-            title="Discord"
-            icon="fa-brands fa-discord"
-            subtitle="Our server is the best place to get help"
+            title="Solar Tweaks"
+            icon="fa-solid fa-comments"
+            subtitle="We are now using GitHub discussions to keep in touch with the community"
             class="little-card"
           >
             <button
-              @click="openLink(constants.links.DISCORD)"
+              @click="openLink(constants.links.GH_DISCUSSIONS)"
               class="button"
             >
               <i class="fa-solid fa-up-right-from-square button-icon"></i>
-              Discord
+              GitHub Discussions
             </button>
           </CardItem>
           <CardItem
@@ -52,7 +52,7 @@
           <CardItem
             title="Lunar Client"
             icon="fa-solid fa-moon"
-            subtitle="Click on the button to open their website"
+            subtitle="Lunar Client official website, includes their store and official announcements"
             class="little-card"
           >
             <button
