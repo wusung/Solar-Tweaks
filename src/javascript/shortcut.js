@@ -45,7 +45,7 @@ export async function createShortcutWrapper(version, serverIp = null) {
   let wrapperData = process.platform !== 'win32' ? '#!/bin/sh\n' : '';
 
   const metadata = await fetchMetadata(true);
-  const args = await getJavaArguments(metadata, serverIp, version);
+  const args = await getJavaArguments(metadata, serverIp, version, true);
 
   wrapperData += `cd "${versionFolder}"\n`;
   wrapperData += process.platform === 'win32' ? 'start "" ' : '';

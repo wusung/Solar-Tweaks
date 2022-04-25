@@ -16,7 +16,7 @@
           class="link"
           @click="openLink(link.url)"
         >
-          <i :class="link.icon"></i>
+          <i :class="link.icon" style="color: #3b3b3b"></i>
         </li>
       </ul>
     </div>
@@ -36,10 +36,6 @@ export default {
   data: () => ({
     version: remote.app.getVersion(),
     links: [
-      {
-        icon: 'fa-brands fa-discord',
-        url: constants.links.DISCORD,
-      },
       {
         icon: 'fa-brands fa-youtube',
         url: constants.links.YOUTUBE,
@@ -95,7 +91,7 @@ export default {
 }
 
 #links-container {
-  margin-left: 325px;
+  margin-left: 375px;
 }
 
 #links {

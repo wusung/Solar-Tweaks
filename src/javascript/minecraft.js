@@ -418,11 +418,13 @@ export async function patchGame() {
  * @param {Object} metadata Metadata from Lunar's API
  * @param {string} [serverIp=null] Server IP to connect to
  * @param {string} [overrideVersion=null] Version to use (overrides settings)
+ * @param {boolean} [quotes=false] Whether or not to include quotes around the arguments
  */
 export async function getJavaArguments(
   metadata,
   serverIp = null,
-  overrideVersion = null
+  overrideVersion = null,
+  quotes = false
 ) {
   const natives = join(
     constants.DOTLUNARCLIENT,
@@ -431,19 +433,19 @@ export async function getJavaArguments(
     'natives'
   );
 
-  const args = metadata.jre.extraArguments;
+  const args = [...metadata.jre.extraArguments];
 
   const nativesArgument = args.findIndex((value) => value.includes('natives'));
   args[nativesArgument] = args[nativesArgument].replace(
     'natives',
-    `${natives}`
+    `"${natives}"`
   );
 
   let version = await settings.get('version');
   if (overrideVersion) version = overrideVersion;
 
   const lunarJarFile = async (filename) =>
-    `${join(constants.DOTLUNARCLIENT, 'offline', version, filename)}`;
+    `"${join(constants.DOTLUNARCLIENT, 'offline', version, filename)}"`;
 
   const gameDir = (await settings.get('launchDirectories')).find(
     (directory) => directory.version === version
@@ -460,11 +462,11 @@ export async function getJavaArguments(
   stat(patcherPath)
     .then(() =>
       args.push(
-        `-javaagent:${patcherPath}=${join(
+        `-javaagent:"${patcherPath}"="${join(
           constants.DOTLUNARCLIENT,
           'solartweaks',
           constants.PATCHER.CONFIG
-        )}`
+        )}"`
       )
     )
     .catch((e) =>
@@ -476,7 +478,7 @@ export async function getJavaArguments(
   args.push(
     ...(await settings.get('jvmArguments')).split(' '),
     `-Xmx${await settings.get('ram')}m`,
-    `-Djava.library.path=${natives}`,
+    `-Djava.library.path="${natives}"`,
     '-cp',
     `${await lunarJarFile(
       'lunar-assets-prod-1-optifine.jar'
@@ -499,22 +501,21 @@ export async function getJavaArguments(
     '--userProperties',
     '{}',
     '--gameDir',
-    `${gameDir}`,
+    `"${gameDir}"`,
     // '--assetsDir',
     // `"${join(gameDir, 'assets')}"`,
     '--texturesDir',
-    `${join(constants.DOTLUNARCLIENT, 'textures')}`,
+    `"${join(constants.DOTLUNARCLIENT, 'textures')}"`,
     '--width',
     resolution.width,
     '--height',
     resolution.height
   );
 
-  if (serverIp) args.push('--server', `${serverIp}`);
+  if (serverIp) args.push('--server', `"${serverIp}"`);
 
-  return args;
+  return args.map((arg) => (!quotes ? `${arg}`.replace(/"/g, '') : arg));
 }
-
 /**
  * Launch the game
  * @param {Object} metadata Metadata from Lunar's API
@@ -534,7 +535,10 @@ export async function launchGame(metadata, serverIp = null) {
   logger.debug('Launching game with args', args);
 
   const process = await spawn(
-    join(await settings.get('jrePath'), 'javaw'),
+    join(
+      await settings.get('jrePath'),
+      platform() === 'win32' ? 'javaw' : 'java'
+    ),
     args,
     {
       cwd: join(
