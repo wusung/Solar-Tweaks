@@ -298,17 +298,35 @@ export async function checkPatcher() {
       logger.error('Failed to fetch updater index', reason);
     });
 
-  const patcherVer = await settings.get('patcherVersion');
-  const latestVer = release.data.index.stable.patcher;
-
-  if (patcherVer === latestVer)
-    return logger.info(`Patcher is up to date ${patcherVer}`);
-
   const patcherPath = join(
     constants.DOTLUNARCLIENT,
     'solartweaks',
     'solar-patcher.jar'
   );
+
+  // Check if file solar-patcher.jar exists
+  if (
+    await stat(
+      join(constants.DOTLUNARCLIENT, 'solartweaks', constants.PATCHER.PATCHER)
+    ).catch(() => true)
+  ) {
+    await downloadAndSaveFile(
+      `${constants.API_URL}${constants.UPDATERS.PATCHER.replace(
+        '{version}',
+        release.data.index.stable.patcher
+      )}`,
+      patcherPath,
+      'blob'
+    );
+    await settings.set('patcherVersion', release.data.index.stable.patcher);
+    return; // No need to check for updates, we just downloaded the latest version
+  }
+
+  const patcherVer = await settings.get('patcherVersion');
+  const latestVer = release.data.index.stable.patcher;
+
+  if (patcherVer === latestVer)
+    return logger.info(`Patcher is up to date ${patcherVer}`);
 
   await downloadAndSaveFile(
     `${constants.API_URL}${constants.UPDATERS.PATCHER.replace(
