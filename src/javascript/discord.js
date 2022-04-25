@@ -8,7 +8,6 @@ export const client = new Client({ transport: 'ipc' });
 
 client.on('ready', async () => {
   logger.info('Discord RPC ready');
-  await updateActivity('In the launcher');
 });
 
 client.isConnected = false;
@@ -19,15 +18,21 @@ client.isConnected = false;
 export function login() {
   client
     .login({ clientId })
-    .then((client) => {
+    .then(async (client) => {
       if (client) {
         logger.info(`Authed for user ${client.user.username}`);
         client.isConnected = true;
+        await updateActivity('In the launcher');
       } else console.error('Failed to login to Discord RPC');
     })
     .catch((error) => {
       logger.error(error);
     });
+}
+
+export async function disableRPC() {
+  if (!client.isConnected) return;
+  return await client.destroy();
 }
 
 /**

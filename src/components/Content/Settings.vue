@@ -238,7 +238,6 @@
               type="checkbox"
               id="settings-debug-mode-input"
               v-model="debugMode"
-              disabled
               @change="updateDebugMode()"
             /><span id="settings-debug-mode-text">Launch in debug mode</span>
           </div>
@@ -920,7 +919,6 @@ export default {
 }
 
 #settings-debug-mode-input {
-  cursor: no-drop;
   margin-top: 10px;
 }
 

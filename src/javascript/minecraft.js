@@ -11,7 +11,7 @@ import process from 'process';
 import constants from '../constants';
 import store from '../store';
 import { downloadLunarAssets } from './assets';
-import { updateActivity } from './discord';
+import { disableRPC, login as connectRPC, updateActivity } from './discord';
 import { downloadAndSaveFile } from './downloader';
 import fs from './fs';
 import Logger from './logger';
@@ -518,8 +518,9 @@ export async function getJavaArguments(
  * Launch the game
  * @param {Object} metadata Metadata from Lunar's API
  * @param {string} [serverIp=null] Server IP to connect to
+ * @param {boolean} [debug=false] Launch in debug mode (show console)
  */
-export async function launchGame(metadata, serverIp = null) {
+export async function launchGame(metadata, serverIp = null, debug = false) {
   store.commit('setLaunchingState', {
     title: 'LAUNCHING...',
     message: 'STARTING JVM...',
@@ -532,8 +533,7 @@ export async function launchGame(metadata, serverIp = null) {
 
   logger.debug('Launching game with args', args);
 
-  const javaName = process.platform === 'win32' ? 'javaw' : 'java';
-  const javaPath = join(await settings.get('jrePath'), javaName);
+  const javaPath = join(await settings.get('jrePath'), 'java');
   const proc = await spawn(javaPath, args, {
     cwd: join(
       constants.DOTLUNARCLIENT,
@@ -541,7 +541,19 @@ export async function launchGame(metadata, serverIp = null) {
       await settings.get('version')
     ),
     detached: true,
+    shell: debug,
   });
+
+  async function commitLaunch() {
+    store.commit('setLaunchingState', {
+      title: `LAUNCH ${await settings.get('version')}`,
+      message: 'READY TO LAUNCH',
+      icon: 'fa-solid fa-gamepad',
+    });
+    store.commit('setLaunching', false);
+  }
+
+  if (debug) return await commitLaunch();
 
   proc.on('error', (error) => {
     logger.error(error);
@@ -557,9 +569,11 @@ export async function launchGame(metadata, serverIp = null) {
 
   proc.stdout.once('end', () => {
     remote.getCurrentWindow().show();
+    connectRPC();
   });
 
   proc.stdout.once('data', async (/* data */) => {
+    await disableRPC();
     switch (await settings.get('actionAfterLaunch')) {
       case 'close':
       default:
@@ -572,14 +586,8 @@ export async function launchGame(metadata, serverIp = null) {
         break;
     }
     setTimeout(async () => {
-      updateActivity('In the launcher');
-      store.commit('setLaunchingState', {
-        title: `LAUNCH ${await settings.get('version')}`,
-        message: 'READY TO LAUNCH',
-        icon: 'fa-solid fa-gamepad',
-      });
-      store.commit('setLaunching', false);
-    }, 3500);
+      await commitLaunch();
+    }, 1500);
   });
 }
 
@@ -635,5 +643,5 @@ export async function checkAndLaunch(serverIp = null) {
   await patchGame();
 
   // Launch game
-  await launchGame(metadata, serverIp);
+  await launchGame(metadata, serverIp, await settings.get('debugMode'));
 }
