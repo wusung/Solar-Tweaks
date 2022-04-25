@@ -29,6 +29,11 @@ module.exports = {
           description: 'Solar Tweaks',
           category: 'Game',
         },
+        mac: {
+          category: 'Game',
+          target: 'dmg',
+          icon: 'build/icons/macos/icon.icns',
+        },
       },
     },
   },
