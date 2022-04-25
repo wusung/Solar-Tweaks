@@ -1,23 +1,22 @@
-import { spawn } from 'child_process';
-import store from '../store';
-import { machineId as _machineId } from 'node-machine-id';
-import extractZip from 'extract-zip';
 import axios from 'axios';
-import { platform, arch } from 'os';
-import { join } from 'path';
-import { stat } from 'fs/promises';
+import { spawn } from 'child_process';
 import { remote } from 'electron';
 import settings from 'electron-settings';
-import { updateActivity } from './discord';
+import extractZip from 'extract-zip';
+import { stat } from 'fs/promises';
+import { machineId as _machineId } from 'node-machine-id';
+import { arch } from 'os';
+import { join } from 'path';
+import process from 'process';
 import constants from '../constants';
-
-import { downloadAndSaveFile } from './downloader';
+import store from '../store';
 import { downloadLunarAssets } from './assets';
-
-import Logger from './logger';
-const logger = new Logger('launcher');
-
+import { updateActivity } from './discord';
+import { downloadAndSaveFile } from './downloader';
 import fs from './fs';
+import Logger from './logger';
+
+const logger = new Logger('launcher');
 
 /**
  * Checks if the `.lunarclient` directory is valid
@@ -96,7 +95,7 @@ export async function fetchMetadata(skipLaunchingState = false) {
         constants.links.LC_METADATA_ENDPOINT,
         {
           hwid: machineId,
-          os: platform(),
+          os: process.platform,
           arch: arch(),
           version: version,
           branch: 'master',
@@ -475,22 +474,21 @@ export async function getJavaArguments(
       )
     );
 
+  const classPath = [
+    await lunarJarFile('lunar-assets-prod-1-optifine.jar'),
+    await lunarJarFile('lunar-assets-prod-2-optifine.jar'),
+    await lunarJarFile('lunar-assets-prod-3-optifine.jar'),
+    await lunarJarFile('lunar-prod-optifine.jar'),
+    await lunarJarFile('lunar-libs.jar'),
+    await lunarJarFile('vpatcher-prod.jar'),
+  ].join(process.platform == 'win32' ? ';' : ':');
+
   args.push(
     ...(await settings.get('jvmArguments')).split(' '),
     `-Xmx${await settings.get('ram')}m`,
     `-Djava.library.path="${natives}"`,
     '-cp',
-    `${await lunarJarFile(
-      'lunar-assets-prod-1-optifine.jar'
-    )};${await lunarJarFile(
-      'lunar-assets-prod-2-optifine.jar'
-    )};${await lunarJarFile(
-      'lunar-assets-prod-3-optifine.jar'
-    )};${await lunarJarFile('lunar-libs.jar')};${await lunarJarFile(
-      'lunar-prod-optifine.jar'
-    )};${await lunarJarFile('OptiFine.jar')};${await lunarJarFile(
-      'vpatcher-prod.jar'
-    )}`,
+    classPath,
     metadata.launchTypeData.mainClass,
     '--version',
     version,
@@ -534,39 +532,34 @@ export async function launchGame(metadata, serverIp = null) {
 
   logger.debug('Launching game with args', args);
 
-  const process = await spawn(
-    join(
-      await settings.get('jrePath'),
-      platform() === 'win32' ? 'javaw' : 'java'
+  const javaName = process.platform === 'win32' ? 'javaw' : 'java';
+  const javaPath = join(await settings.get('jrePath'), javaName);
+  const proc = await spawn(javaPath, args, {
+    cwd: join(
+      constants.DOTLUNARCLIENT,
+      'offline',
+      await settings.get('version')
     ),
-    args,
-    {
-      cwd: join(
-        constants.DOTLUNARCLIENT,
-        'offline',
-        await settings.get('version')
-      ),
-      detached: true,
-    }
-  );
+    detached: true,
+  });
 
-  process.on('error', (error) => {
+  proc.on('error', (error) => {
     logger.error(error);
   });
 
-  process.stdout.on('error', (error) => {
+  proc.stdout.on('error', (error) => {
     logger.error('Failed to launch game', error);
   });
 
-  process.stderr.on('error', (error) => {
+  proc.stderr.on('error', (error) => {
     logger.error('Failed to launch game', error);
   });
 
-  process.stdout.once('end', () => {
+  proc.stdout.once('end', () => {
     remote.getCurrentWindow().show();
   });
 
-  process.stdout.once('data', async (/* data */) => {
+  proc.stdout.once('data', async (/* data */) => {
     switch (await settings.get('actionAfterLaunch')) {
       case 'close':
       default:
