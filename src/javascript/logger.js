@@ -14,25 +14,25 @@ export default class Logger {
   debug(...args) {
     const x = `[${this.name}]`;
     this.logger.debug(x, ...args);
-    this.writeLog(`[DEBUG] ${x}`);
+    this.writeLog(`[DEBUG] ${x} ${[...args].join(' ')}`);
   }
 
   info(...args) {
     const x = `[${this.name}]`;
     this.logger.info(x, ...args);
-    this.writeLog(`[INFO] ${x}`);
+    this.writeLog(`[INFO] ${x} ${[...args].join(' ')}`);
   }
 
   warn(...args) {
     const x = `[${this.name}]`;
     this.logger.warn(x, ...args);
-    this.writeLog(`[WARN] ${x}`);
+    this.writeLog(`[WARN] ${x} ${[...args].join(' ')}`);
   }
 
   error(...args) {
     const x = `[${this.name}]`;
     this.logger.error(x, ...args);
-    this.writeLog(`[ERROR] ${x}`);
+    this.writeLog(`[ERROR] ${x} ${[...args].join(' ')}`);
   }
 
   /**
