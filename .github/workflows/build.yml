@@ -12,3 +12,5 @@ jobs:
           node-version: 16
       - run: npm install
       - run: npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
