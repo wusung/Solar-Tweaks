@@ -89,7 +89,7 @@ export default {
       {
         name: 'Always render cloth cloaks',
         icon: 'cloak.png',
-        internal: 'clothCloaks',
+        internal: 'clothCapes',
         enabled: false,
       },
       {
@@ -338,7 +338,7 @@ export default {
         name: 'Cloaks+',
         icon: 'cloaks.png',
         internal: 'cloaksPlus',
-        enabled: false,
+        enabled: true,
       },
     ],
     customizing: {
