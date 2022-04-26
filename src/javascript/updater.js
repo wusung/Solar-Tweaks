@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { platform } from 'process';
-import { join } from 'path';
-import { remote } from 'electron';
 import { execSync } from 'child_process';
+import { remote } from 'electron';
 import { unlink } from 'fs/promises';
+import { join } from 'path';
+import { platform } from 'process';
 import constants from '../constants';
 import { downloadAndSaveFile } from './downloader';
-
 import Logger from './logger';
+
 const logger = new Logger('updater');
 
 /**
@@ -51,7 +51,7 @@ export async function checkForUpdates() {
         'Downloading update in the background. Please wait.\n\nThis may take a while depending on your internet speed. You can close this window and use the launcher, we will notify you when the update is ready.',
     });
 
-    const filename = `launcher-${release.data.index.stable.launcher}-update-temp`;
+    const filename = `launcher-${release.data.index.stable.launcher}-update-temp.exe`;
     const filePath = join(constants.DOTLUNARCLIENT, 'solartweaks', filename);
 
     await downloadAndSaveFile(
