@@ -71,6 +71,63 @@ export async function setupLunarClientDirectory() {
 }
 
 /**
+ * Checks if the JRE is valid
+ */
+export async function checkJRE() {
+  store.commit('setLaunchingState', {
+    title: 'LAUNCHING...',
+    message: 'CHECKING JRE...',
+    icon: 'fa-solid fa-folder',
+  });
+
+  const jrePath = await settings.get('jrePath');
+  const javaName = process.platform === 'win32' ? 'java.exe' : 'java';
+
+  const exists = {
+    jre: await stat(jrePath).catch(() => false), // Bin folder
+    java: await stat(join(jrePath, javaName)).catch(() => false), // Java binary
+  };
+
+  // If one of them is missing
+  if (!exists.jre || !exists.java) {
+    logger.warn(
+      'JRE not found! Showing error dialog and aborting launch process'
+    );
+
+    const choice = await remote.dialog.showMessageBox({
+      type: 'error',
+      title: 'JRE not found',
+      message:
+        'The JRE you selected was not found or is invalid.\n\nPlease select a valid JRE in the settings page or download one using the JRE downloader.',
+      buttons: ['Select JRE', 'Cancel launch'],
+    });
+
+    if (choice.response === 0) {
+      // Set new folder
+      const folder = await remote.dialog.showOpenDialog({
+        title: `Select the new JRE for Lunar Client (Select the bin folder)`,
+        defaultPath: jrePath,
+        properties: ['dontAddToRecent', 'openDirectory'],
+      });
+
+      if (folder.canceled) return;
+
+      await settings.set('jrePath', folder.filePaths[0]);
+      await checkJRE();
+    } else {
+      // Cancel launch or closed
+      store.commit('setLaunchingState', {
+        title: `LAUNCH ${await settings.get('version')}`,
+        message: 'READY TO LAUNCH',
+        icon: 'fa-solid fa-gamepad',
+      });
+      store.commit('setLaunching', false);
+      throw new Error('JRE not found');
+    }
+  }
+}
+
+/**
  * Fetches metadata from Lunar's API
  * @param {boolean} [skipLaunchingState=false] Skip or not the launching state
  * @returns {Promise<Object>}
@@ -627,6 +684,9 @@ export async function checkAndLaunch(serverIp = null) {
   });
 
   if (!(await settings.get('skipChecks'))) {
+    // Check JRE
+    await checkJRE();
+
     // Check game directory
     await setupLunarClientDirectory();
 
