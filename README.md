@@ -2,26 +2,18 @@
 
 ![GitHub](https://img.shields.io/github/license/Solar-Tweaks/Solar-Tweaks?style=for-the-badge)
 ![GitHub all releases](https://img.shields.io/github/downloads/Solar-Tweaks/Solar-Tweaks/total?style=for-the-badge)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/Solar-Tweaks/Solar-Tweaks-V4?style=for-the-badge)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/Solar-Tweaks/Solar-Tweaks?style=for-the-badge)
 ![Maintenance](https://img.shields.io/maintenance/yes/2022?style=for-the-badge)
 
 Solar Tweaks is a software that allows you to tweak Lunar Client to your liking and re-enable some features that are completely disabled such as Freelook, AutoTextHotkey, removing pinned servers, changing FPS text etc...
 
 However, SolarTweaks is to use at your own risk. Editing Lunar Client source code is not allowed! You can read Lunar Client's Terms of Service [here](https://www.lunarclient.com/terms). We are not responsible for **any** damage caused by using Solar Tweaks.
 
-# Dear Lunar Client (Moonsworth) 🌙
-
-~~You probably won't like this project (just like the rest of our projects). This software is free software, do anything you want with the code, shamelessly reuse it, do whatever you want, we don't care. Our only goal is to improve the experience of players. Maybe take our modules as an example, and see if you can improve your UX (not gonna lie, your launcher and modpack both miss some important features). We are not saying that our launcher is perfect (nothing is perfect anyway), but we are really trying to make it as good as possible, to improve our user experience.~~
-
-~~*Please don't sue us, there is no need to* 💖~~
-
-Let's stop lying and be honest. We stopped everything you didn't like (here we mean cosmetics) fuck you now, we won't cooperate anymore.
-
 # Installing ⬇️
 
-You can download the latest version of Solar Tweaks from the [GitHub releases page](https://github.com/Solar-Tweaks/Solar-Tweaks-V4/releases). You need to download the version corresponding to your operating system (OS).
+You can download the latest version of Solar Tweaks from the [GitHub releases page](https://github.com/Solar-Tweaks/Solar-Tweaks/releases). You need to download the version corresponding to your operating system (OS).
 
-If you want a complete tutorial about how to install Solar Tweaks for your specific operating system, you can read the installation guide on [our wiki](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
+If you want a complete tutorial about how to install Solar Tweaks for your specific operating system, ~~you can read the installation guide on [our wiki](https://www.youtube.com/watch?v=dQw4w9WgXcQ).~~ More info on the installation process soon.
 
 # Usage ⚒️
 
@@ -35,11 +27,11 @@ Tweak and customize your game by going to the **Customize** tab, change the laun
 
 Solar Tweaks is fully open source which means you can build it from source and add your own modifications to it. To do so, clone this repository using
 ```bash
-$ git clone https://github.com/Solar-Tweaks/Solar-Tweaks-V4
+$ git clone https://github.com/Solar-Tweaks/Solar-Tweaks.git
 ```
 Once the repo is downloaded move to the directory and install the dependencies
 ```bash
-$ cd Solar-Tweaks-V4
+$ cd Solar-Tweaks
 $ npm install
 ```
 If you want to start a development version run this command (This will build the app and start it for you. This will also include hot reload for easier development and testing)
@@ -57,4 +49,4 @@ There are a lot of ways to contribute to Solar Tweaks:
 
 - Fork the repository and make your own modifications and then open a [pull request](https://github.com/Solar-Tweaks/Solar-Tweaks/pulls)
 - You can [submit bugs](https://github.com/Solar-Tweaks/Solar-Tweaks/issues)
-- Help other users in our [Discord server](https://discord.gg/SolarTweaks)
+- Help other users in our [Discussions page](https://github.com/orgs/Solar-Tweaks/discussions)
