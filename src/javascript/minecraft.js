@@ -556,6 +556,7 @@ export async function getJavaArguments(
     await lunarJarFile('lunar-prod-optifine.jar'),
     await lunarJarFile('lunar-libs.jar'),
     await lunarJarFile('vpatcher-prod.jar'),
+    await lunarJarFile('Optifine.jar'),
   ].join(process.platform == 'win32' ? ';' : ':');
 
   args.push(
