@@ -455,7 +455,7 @@ export async function patchGame() {
     if (Object.prototype.hasOwnProperty.call(customization, 'privacyModules')) {
       customization.privacyModules.forEach((module) => {
         if (!Object.prototype.hasOwnProperty.call(config, module)) return;
-        config[module].enabled = customization.enabled;
+        config[module].isEnabled = customization.enabled;
       });
       return;
     }
@@ -558,8 +558,9 @@ export async function getJavaArguments(
     await lunarJarFile('vpatcher-prod.jar'),
     await lunarJarFile('Optifine.jar'),
   ];
-  
-  if (version === '1.7') classPath.push(await lunarJarFile("OptiFine_1.7.10_HD_U_E7"))
+
+  if (version === '1.7')
+    classPath.push(await lunarJarFile('OptiFine_1.7.10_HD_U_E7'));
 
   args.push(
     ...(await settings.get('jvmArguments')).split(' '),
