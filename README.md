@@ -11,7 +11,7 @@ However, SolarTweaks is to use at your own risk. Editing Lunar Client source cod
 
 # Installing ⬇️
 
-You can download the latest version of Solar Tweaks from the [GitHub releases page](https://github.com/Solar-Tweaks/Solar-Tweaks/releases). You need to download the version corresponding to your operating system (OS).
+You can download the latest version of Solar Tweaks from the [GitHub releases page](https://github.com/Solar-Tweaks/Solar-Tweaks/releases). You need to download the version corresponding to your operating system (OS). You can find a more in depth explanation on how to download [here](https://github.com/Solar-Tweaks/Solar-Tweaks/wiki/Download-Solar-Tweaks)
 
 If you want a complete tutorial about how to install Solar Tweaks for your specific operating system, ~~you can read the installation guide on [our wiki](https://www.youtube.com/watch?v=dQw4w9WgXcQ).~~ More info on the installation process soon.
 
