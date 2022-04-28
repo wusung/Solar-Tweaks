@@ -364,7 +364,7 @@ export async function checkPatcher() {
   // Check if file solar-patcher.jar exists
   if (
     !(await stat(
-      join(constants.DOTLUNARCLIENT, 'solartweaks', constants.PATCHER.PATCHER)
+      join(constants.SOLARTWEAKS_DIR, constants.PATCHER.PATCHER)
     ).catch(() => false))
   ) {
     await downloadAndSaveFile(
@@ -748,4 +748,18 @@ export async function checkAndLaunch(serverIp = null) {
 
   // Launch game
   await launchGame(metadata, serverIp, await settings.get('debugMode'));
+
+  // Trackers
+  const version = await settings.get('version');
+  await axios
+    .post(`${constants.API_URL}${constants.ENDPOINTS.LAUNCH}`, {
+      item: 'launcher',
+      version: version === '1.18' ? '1.18.1' : version,
+    })
+    .catch((error) =>
+      logger.warn(
+        "Failed to track launcher launch, ignoring it, it's not important.",
+        error
+      )
+    );
 }

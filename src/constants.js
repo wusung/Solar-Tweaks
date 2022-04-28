@@ -11,14 +11,9 @@ export default {
     LC_METADATA_ENDPOINT: 'https://api.lunarclientprod.com/launcher/launch',
   },
   API_URL: 'https://server.solartweaks.com/api',
-  SOLAR_PATCHER_GITHUB_API:
-    'https://api.github.com/repos/Solar-Tweaks/SolarPatcher',
-  SOLAR_TWEAKS_GITHUB_API:
-    'https://api.github.com/repos/Solar-Tweaks/Solar-Tweaks',
   PATCHER: {
     PATCHER: 'solar-patcher.jar',
     CONFIG: 'config.json',
-    UPDATER: 'updater.json',
     CONFIG_EXAMPLE_URL:
       'https://raw.githubusercontent.com/Solar-Tweaks/SolarPatcher/main/config.example.json',
   },
@@ -27,6 +22,9 @@ export default {
     LAUNCHER: '/updater/?item=launcher&version={version}',
     PATCHER: '/updater/?item=patcher&version={version}',
   },
-
+  ENDPOINTS: {
+    LAUNCH: '/launch',
+  },
   DOTLUNARCLIENT: join(homedir(), '.lunarclient'),
+  SOLARTWEAKS_DIR: join(homedir(), '.lunarclient', 'solartweaks'),
 };

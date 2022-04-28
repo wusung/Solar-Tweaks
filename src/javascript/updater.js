@@ -52,7 +52,7 @@ export async function checkForUpdates() {
     });
 
     const filename = `launcher-${release.data.index.stable.launcher}-update-temp.exe`;
-    const filePath = join(constants.DOTLUNARCLIENT, 'solartweaks', filename);
+    const filePath = join(constants.SOLARTWEAKS_DIR, filename);
 
     await downloadAndSaveFile(
       `${constants.API_URL}${constants.UPDATERS.LAUNCHER.replace(

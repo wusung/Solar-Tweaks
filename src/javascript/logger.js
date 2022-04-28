@@ -41,7 +41,7 @@ export default class Logger {
    */
   async writeLog(log) {
     await fs.appendFile(
-      join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs', 'latest.log'),
+      join(constants.SOLARTWEAKS_DIR, 'logs', 'latest.log'),
       `${log}\n`
     );
   }
@@ -51,8 +51,5 @@ export default class Logger {
  * Clears the log file
  */
 export async function clearLogs() {
-  await fs.writeFile(
-    join(constants.DOTLUNARCLIENT, 'solartweaks', 'logs', 'latest.log'),
-    ''
-  );
+  await fs.writeFile(join(constants.SOLARTWEAKS_DIR, 'logs', 'latest.log'), '');
 }

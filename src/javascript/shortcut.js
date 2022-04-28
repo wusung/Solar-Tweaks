@@ -1,13 +1,13 @@
-import fs from './fs';
-import process from 'process';
-import { join } from 'path';
-import { fetchMetadata, getJavaArguments } from './minecraft';
-import settings from 'electron-settings';
-import Logger from './logger';
 import { exec } from 'child_process';
 import { remote } from 'electron';
-import store from '../store';
+import settings from 'electron-settings';
+import { join } from 'path';
+import process from 'process';
 import constants from '../constants';
+import store from '../store';
+import fs from './fs';
+import Logger from './logger';
+import { fetchMetadata, getJavaArguments } from './minecraft';
 
 const logger = new Logger('shortcut');
 
@@ -18,12 +18,8 @@ const logger = new Logger('shortcut');
  * @returns {Promise<void>}
  */
 export async function createShortcutWrapper(version, serverIp = null) {
-  if (
-    !(await fs.exists(
-      join(constants.DOTLUNARCLIENT, 'solartweaks', 'wrappers')
-    ))
-  )
-    await fs.mkdir(join(constants.DOTLUNARCLIENT, 'solartweaks', 'wrappers'));
+  if (!(await fs.exists(join(constants.SOLARTWEAKS_DIR, 'wrappers'))))
+    await fs.mkdir(join(constants.SOLARTWEAKS_DIR, 'wrappers'));
 
   let wrapper = `wrapper-${version}-${serverIp}.`;
   if (process.platform === 'win32') wrapper += 'cmd';
