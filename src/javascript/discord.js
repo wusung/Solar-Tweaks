@@ -1,4 +1,5 @@
 import { Client } from 'discord-rpc';
+import { remote } from 'electron';
 import Logger from './logger';
 const logger = new Logger('discord');
 
@@ -54,8 +55,20 @@ export async function updateActivity(
     details,
     state,
     largeImageKey: 'logo',
-    largeImageText: 'Solar Tweaks 4.0.0-dev',
+    largeImageText: `Solar Tweaks ${remote.app.getVersion()}`,
+    buttons: [
+      {
+        label: '⬇️⠀Download Solar Tweaks',
+        url: 'https://github.com/Solar-Tweaks/Solar-Tweaks',
+      },
+    ],
   };
+
+  if (Math.random() > 0.98)
+    activity.buttons.push({
+      label: '🧐⠀Super secret button',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    });
 
   if (timestamp && mode) {
     if (mode === 'remaining') {
