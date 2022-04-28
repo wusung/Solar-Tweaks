@@ -516,13 +516,13 @@ export async function patchGame() {
  * @param {Object} metadata Metadata from Lunar's API
  * @param {string} [serverIp=null] Server IP to connect to
  * @param {string} [overrideVersion=null] Version to use (overrides settings)
- * @param {boolean} [quotes=false] Whether or not to include quotes around the arguments
+ * @param {boolean} [shortcut=false] Whether or not the arguments are for a shortcut
  */
 export async function getJavaArguments(
   metadata,
   serverIp = null,
   overrideVersion = null,
-  quotes = false
+  shortcut = false
 ) {
   const natives = join(
     constants.DOTLUNARCLIENT,
@@ -590,6 +590,7 @@ export async function getJavaArguments(
     ...(await settings.get('jvmArguments')).split(' '),
     `-Xmx${await settings.get('ram')}m`,
     `-Djava.library.path="${natives}"`,
+    `-Dsolar.launchType=${shortcut ? 'shortcut' : 'launcher'}`,
     '-cp',
     classPath.join(process.platform == 'win32' ? ';' : ':'),
     metadata.launchTypeData.mainClass,
@@ -615,7 +616,7 @@ export async function getJavaArguments(
 
   if (serverIp) args.push('--server', `"${serverIp}"`);
 
-  return args.map((arg) => (!quotes ? `${arg}`.replace(/"/g, '') : arg));
+  return args.map((arg) => (!shortcut ? `${arg}`.replace(/"/g, '') : arg));
 }
 /**
  * Launch the game
