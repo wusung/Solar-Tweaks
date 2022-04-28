@@ -320,6 +320,12 @@ export default {
         enabled: false,
       },
       {
+        name: 'Remove Lunar chat cooldown',
+        icon: 'chat.png',
+        internal: 'removeChatDelay',
+        enabled: true,
+      },
+      {
         name: 'Mumble fix',
         icon: 'mumble.png',
         internal: 'mumbleFix',
