@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import { remote } from 'electron';
 import settings from 'electron-settings';
 import extractZip from 'extract-zip';
-import { stat } from 'fs/promises';
+import { readFile, stat, writeFile } from 'fs/promises';
 import { machineId as _machineId } from 'node-machine-id';
 import { arch } from 'os';
 import { join } from 'path';
@@ -363,9 +363,9 @@ export async function checkPatcher() {
 
   // Check if file solar-patcher.jar exists
   if (
-    await stat(
+    !(await stat(
       join(constants.DOTLUNARCLIENT, 'solartweaks', constants.PATCHER.PATCHER)
-    ).catch(() => true)
+    ).catch(() => false))
   ) {
     await downloadAndSaveFile(
       `${constants.API_URL}${constants.UPDATERS.PATCHER.replace(
@@ -396,6 +396,30 @@ export async function checkPatcher() {
 
   logger.info(`Patcher updated to ${latestVer}`);
   await settings.set('patcherVersion', latestVer);
+
+  logger.debug('Updating config.json file to match new patcher config...');
+  const defaultConfigFile = (
+    await axios.get(constants.PATCHER.CONFIG_EXAMPLE_URL)
+  ).data;
+
+  const configPath = join(
+    constants.DOTLUNARCLIENT,
+    'solartweaks',
+    constants.PATCHER.CONFIG
+  );
+  const config = await readFile(configPath, 'utf8');
+
+  function merge(obj1, obj2) {
+    const newObj = { ...obj1, ...obj2 };
+    for (const key in newObj)
+      if (typeof newObj[key] === 'object')
+        newObj[key] = merge(obj1[key], obj2[key]);
+
+    return newObj;
+  }
+
+  const newConfig = merge(defaultConfigFile, JSON.parse(config));
+  await writeFile(configPath, JSON.stringify(newConfig, null, 2));
 }
 
 /**
@@ -707,10 +731,8 @@ export async function checkAndLaunch(serverIp = null) {
     await downloadLunarAssets(metadata);
 
     // Check patcher
-    await checkPatcher().catch(() =>
-      logger.error(
-        'Failed to check patcher, is GitHub down? Have we messed up while publishing the release? Skipping patcher check.'
-      )
+    await checkPatcher().catch((error) =>
+      logger.error('Failed to check patcher, skipping patcher check.', error)
     );
 
     // Patcher config
