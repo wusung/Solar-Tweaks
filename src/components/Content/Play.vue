@@ -61,6 +61,10 @@
 <script>
 import settings from 'electron-settings';
 import { checkAndLaunch } from '../../javascript/minecraft';
+import Logger from '../../javascript/logger';
+import { updateActivity } from '../../javascript/discord';
+
+const logger = new Logger('play');
 
 export default {
   name: 'Play',
@@ -107,7 +111,10 @@ export default {
      * Launch the game
      */
     async launchGame() {
-      await checkAndLaunch();
+      await checkAndLaunch().catch((error) => {
+        logger.error(error);
+        updateActivity('In the launcher');
+      });
     },
 
     /**

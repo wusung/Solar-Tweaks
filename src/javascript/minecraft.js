@@ -631,8 +631,6 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
     icon: 'fa-solid fa-gamepad',
   });
 
-  updateActivity('In the launcher', 'Launching game');
-
   const args = await getJavaArguments(metadata, serverIp);
 
   logger.debug('Launching game with args', args);
@@ -649,6 +647,7 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
   });
 
   async function commitLaunch() {
+    updateActivity('In the launcher');
     store.commit('setLaunchingState', {
       title: `LAUNCH ${await settings.get('version')}`,
       message: 'READY TO LAUNCH',
@@ -702,6 +701,7 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
 // eslint-disable-next-line no-unused-vars
 export async function checkAndLaunch(serverIp = null) {
   store.commit('setLaunching', true);
+  updateActivity('In the launcher', 'Launching game');
 
   // Fetching metadata
   const metadata = await fetchMetadata().catch((error) => {
