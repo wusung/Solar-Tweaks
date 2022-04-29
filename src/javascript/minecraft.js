@@ -14,7 +14,7 @@ import { downloadLunarAssets } from './assets';
 import { disableRPC, login as connectRPC, updateActivity } from './discord';
 import { downloadAndSaveFile } from './downloader';
 import fs from './fs';
-import Logger from './logger';
+import Logger, { createMinecraftLogger } from './logger';
 
 const logger = new Logger('launcher');
 
@@ -631,17 +631,14 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
     icon: 'fa-solid fa-gamepad',
   });
 
+  const version = await settings.get('version');
   const args = await getJavaArguments(metadata, serverIp);
 
   logger.debug('Launching game with args', args);
 
   const javaPath = join(await settings.get('jrePath'), 'java');
   const proc = await spawn(javaPath, args, {
-    cwd: join(
-      constants.DOTLUNARCLIENT,
-      'offline',
-      await settings.get('version')
-    ),
+    cwd: join(constants.DOTLUNARCLIENT, 'offline', version),
     detached: true,
     shell: debug,
   });
@@ -649,7 +646,7 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
   async function commitLaunch() {
     updateActivity('In the launcher');
     store.commit('setLaunchingState', {
-      title: `LAUNCH ${await settings.get('version')}`,
+      title: `LAUNCH ${version}`,
       message: 'READY TO LAUNCH',
       icon: 'fa-solid fa-gamepad',
     });
@@ -692,6 +689,10 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
       await commitLaunch();
     }, 1500);
   });
+
+  const minecraftLogger = await createMinecraftLogger(version);
+  proc.stdout.pipe(minecraftLogger);
+  proc.stderr.pipe(minecraftLogger);
 }
 
 /**

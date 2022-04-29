@@ -1,3 +1,4 @@
+import { createWriteStream } from 'fs';
 import fs from 'fs/promises';
 import { join } from 'path';
 import constants from '../constants';
@@ -45,6 +46,18 @@ export default class Logger {
       `${log}\n`
     );
   }
+}
+
+export async function createMinecraftLogger(version) {
+  const logFile = join(
+    constants.SOLARTWEAKS_DIR,
+    'logs',
+    `${version}-latest.log`
+  );
+
+  await fs.writeFile(logFile, ''); // Clear the file and creates it if it doesn't exist
+
+  return createWriteStream(logFile, { encoding: 'utf8' });
 }
 
 /**
