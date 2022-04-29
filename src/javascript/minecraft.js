@@ -691,6 +691,9 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
   });
 
   const minecraftLogger = await createMinecraftLogger(version);
+  logger.debug(
+    `Created Minecraft Logger for version ${version}. Log file path: ${minecraftLogger.path}`
+  );
   proc.stdout.pipe(minecraftLogger);
   proc.stderr.pipe(minecraftLogger);
 }

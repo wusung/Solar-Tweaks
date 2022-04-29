@@ -42,7 +42,7 @@ export default class Logger {
    */
   async writeLog(log) {
     await fs.appendFile(
-      join(constants.SOLARTWEAKS_DIR, 'logs', 'latest.log'),
+      join(constants.SOLARTWEAKS_DIR, 'logs', 'launcher-latest.log'),
       `${log}\n`
     );
   }
@@ -64,5 +64,13 @@ export async function createMinecraftLogger(version) {
  * Clears the log file
  */
 export async function clearLogs() {
-  await fs.writeFile(join(constants.SOLARTWEAKS_DIR, 'logs', 'latest.log'), '');
+  // Delete old log file for cleaning purposes
+  await fs
+    .unlink(join(constants.SOLARTWEAKS_DIR, 'logs', 'latest.log'))
+    .catch(() => {});
+
+  await fs.writeFile(
+    join(constants.SOLARTWEAKS_DIR, 'logs', 'launcher-latest.log'),
+    ''
+  );
 }
