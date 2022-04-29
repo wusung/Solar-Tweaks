@@ -48,6 +48,10 @@
             ><h4 id="launcher-version">
               Version {{ aboutLauncherDescription.launcher }}
             </h4>
+            <button @click="openSolarTweaksFolder()" class="button">
+              <i class="fa-solid fa-folder-open button-icon"></i>
+              Open ST folder
+            </button>
           </CardItem>
           <CardItem
             title="Lunar Client"
@@ -102,6 +106,12 @@ export default {
      */
     openLink(url) {
       remote.shell.openExternal(url);
+    },
+    /**
+     * Opens the Solar Tweaks folder
+     */
+    openSolarTweaksFolder() {
+      remote.shell.openPath(constants.SOLARTWEAKS_DIR);
     },
   },
 };
@@ -162,5 +172,6 @@ export default {
 #launcher-version {
   margin-top: 3px;
   font-weight: 400;
+  text-align: center;
 }
 </style>
