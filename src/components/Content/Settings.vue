@@ -127,8 +127,13 @@
                 v-model="skipChecks"
                 @change="updateSkipChecks()"
               /><span id="settings-debug-mode-text"
-                >Skip checks (game files, JRE, licenses, natives and
-                assets)</span
+                >Skip checks (game files, JRE, licenses, natives and assets)
+                <span class="settings-debug-mode-warning"
+                  ><i
+                    class="settings-debug-mode-warning fa-solid fa-triangle-exclamation"
+                  ></i
+                  > Warning: Not recommended for Normal Users unless told by a Developer!</span
+                ></span
               >
             </div>
           </div>
@@ -353,16 +358,16 @@ export default {
         args: '-Xms1G -Xmx1G -Xmn768m -XX:+DisableAttachMechanism',
       },
       {
-        name: 'Zulu optimized 1',
-        args: '-Xms3G -Xmx3G -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
+        name: 'Zulu optimized',
+        args: '-Xverify:none -Xss2M -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+AlwaysActAsServerClassMachine -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=32 -XX:G1HeapRegionSize=8M -XX:GCTimeLimit=50 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:-UsePerfData -XX:+PerfDisableSharedMem -XX:+UseLargePages -XX:+AlwaysPreTouch -XX:+EliminateLocks -XX:+AggressiveHeap -XX:+EagerJVMCI',
       },
       {
-        name: 'Zulu optimized 2',
-        args: '-XX:+UseG1GC -Xmx3G -Xms3G -Xmn1G -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M',
-      },
-      {
-        name: 'GraalVM',
+        name: 'GraalVM Community',
         args: '-Xms3G -Xmx3G -Xmn1G -XX:+DisableAttachMechanism -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M -XX:+EnableJVMCI -XX:+UseJVMCICompiler -XX:+EagerJVMCI -Djvmci.Compiler=graal',
+      },
+      {
+        name: 'GraalVM Enterprise',
+        args: '-Xverify:none -Xss2M -Xmn1G -XX:+UnlockExperimentalVMOptions -XX:+AlwaysActAsServerClassMachine -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=32 -XX:G1HeapRegionSize=8M -XX:GCTimeLimit=50 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:-UsePerfData -XX:+PerfDisableSharedMem -XX:+UseLargePages -XX:+AlwaysPreTouch -XX:JVMCIThreads=2 -XX:+EliminateLocks -XX:+AggressiveHeap -Dgraal.TuneInlinerExploration=1 -XX:+EagerJVMCI',
       },
     ],
     jrePath: '',
@@ -925,6 +930,10 @@ export default {
 #settings-debug-mode-text {
   margin-left: 10px;
   margin-top: 7px;
+}
+
+.settings-debug-mode-warning {
+  color: #d0342c;
 }
 
 #settings-jre-downloader {
