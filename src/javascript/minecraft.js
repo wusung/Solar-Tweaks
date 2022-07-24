@@ -224,14 +224,10 @@ export async function checkGameFiles(metadata) {
   });
 
   if (
-    !(await fs.exists(
-      join(constants.DOTLUNARCLIENT, 'offline', await settings.get('version'))
-    ))
+    !(await fs.exists(join(constants.DOTLUNARCLIENT, 'offline', 'multiver')))
   ) {
     await fs
-      .mkdir(
-        join(constants.DOTLUNARCLIENT, 'offline', await settings.get('version'))
-      )
+      .mkdir(join(constants.DOTLUNARCLIENT, 'offline', 'multiver'))
       .catch((error) => {
         logger.error('Failed to create version folder', error);
       });
@@ -242,7 +238,7 @@ export async function checkGameFiles(metadata) {
     const gameFilePath = join(
       constants.DOTLUNARCLIENT,
       'offline',
-      await settings.get('version'),
+      'multiver',
       artifact.name
     );
     logger.debug(
@@ -254,12 +250,7 @@ export async function checkGameFiles(metadata) {
     if (!(await fs.exists(gameFilePath))) {
       await downloadAndSaveFile(
         artifact.url,
-        join(
-          constants.DOTLUNARCLIENT,
-          'offline',
-          await settings.get('version'),
-          artifact.name
-        ),
+        join(constants.DOTLUNARCLIENT, 'offline', 'multiver', artifact.name),
         'blob',
         artifact.sha1,
         'sha1'
@@ -289,38 +280,18 @@ export async function checkNatives(metadata) {
   );
   if (
     await fs.exists(
-      join(
-        constants.DOTLUNARCLIENT,
-        'offline',
-        await settings.get('version'),
-        artifact.name
-      )
+      join(constants.DOTLUNARCLIENT, 'offline', 'multiver', artifact.name)
     )
   ) {
     if (
       !(await fs.exists(
-        join(
-          constants.DOTLUNARCLIENT,
-          'offline',
-          await settings.get('version'),
-          'natives'
-        )
+        join(constants.DOTLUNARCLIENT, 'offline', 'multiver', 'natives')
       ))
     ) {
       await extractZip(
-        join(
-          constants.DOTLUNARCLIENT,
-          'offline',
-          await settings.get('version'),
-          artifact.name
-        ),
+        join(constants.DOTLUNARCLIENT, 'offline', 'multiver', artifact.name),
         {
-          dir: join(
-            constants.DOTLUNARCLIENT,
-            'offline',
-            await settings.get('version'),
-            'natives'
-          ),
+          dir: join(constants.DOTLUNARCLIENT, 'offline', 'multiver', 'natives'),
         }
       )
         .then(() => {
@@ -528,7 +499,7 @@ export async function getJavaArguments(
   const natives = join(
     constants.DOTLUNARCLIENT,
     'offline',
-    await settings.get('version'),
+    'multiver',
     'natives'
   );
 
@@ -543,8 +514,8 @@ export async function getJavaArguments(
   let version = await settings.get('version');
   if (overrideVersion) version = overrideVersion;
 
-  const lunarJarFile = async (filename) =>
-    `"${join(constants.DOTLUNARCLIENT, 'offline', version, filename)}"`;
+  const lunarJarFile = (filename) =>
+    `"${join(constants.DOTLUNARCLIENT, 'offline', 'multiver', filename)}"`;
 
   const gameDir =
     (await settings.get('launchDirectories')).find(
@@ -560,30 +531,27 @@ export async function getJavaArguments(
 
   // Make sure the patcher exists, or else the game will crash (jvm init error)
   stat(patcherPath)
-    .then(() =>
+    .then(() => {
       args.push(
         `-javaagent:"${patcherPath}"="${join(
           constants.DOTLUNARCLIENT,
           'solartweaks',
           constants.PATCHER.CONFIG
         )}"`
-      )
-    )
+      );
+    })
     .catch((e) =>
       logger.warn(
         `Not adding patcher in arguments; ${patcherPath} does not exist! ${e}`
       )
     );
 
-  const classPath = [
-    await lunarJarFile('lunar-assets-prod-1-optifine.jar'),
-    await lunarJarFile('lunar-assets-prod-2-optifine.jar'),
-    await lunarJarFile('lunar-assets-prod-3-optifine.jar'),
-    await lunarJarFile('lunar-prod-optifine.jar'),
-    await lunarJarFile('lunar-libs.jar'),
-    await lunarJarFile('vpatcher-prod.jar'),
-    await lunarJarFile('Optifine.jar'),
-  ];
+  const classPath = [];
+  metadata.launchTypeData.artifacts
+    .filter((a) => a.type === 'CLASS_PATH')
+    .forEach(async (artifact) => {
+      classPath.push(lunarJarFile(artifact.name));
+    });
 
   if (version === '1.7')
     classPath.push(await lunarJarFile('OptiFine_1.7.10_HD_U_E7'));
@@ -613,7 +581,16 @@ export async function getJavaArguments(
     '--width',
     resolution.width,
     '--height',
-    resolution.height
+    resolution.height,
+    '--ichorClassPath',
+    classPath.join(),
+    '--ichorExternalFiles',
+    metadata.launchTypeData.artifacts.find((a) => a.type === 'EXTERNAL_FILE')
+      .name,
+    '--workingDirectory',
+    '.',
+    '--classpathDir',
+    join(constants.DOTLUNARCLIENT, 'offline', 'multiver')
   );
 
   if (serverIp) args.push('--server', `"${serverIp}"`);
@@ -636,11 +613,11 @@ export async function launchGame(metadata, serverIp = null, debug = false) {
   const version = await settings.get('version');
   const args = await getJavaArguments(metadata, serverIp);
 
-  logger.debug('Launching game with args', args);
+  logger.debug('Launching game with args\n\n', args.join('\n'));
 
   const javaPath = join(await settings.get('jrePath'), 'java');
   const proc = await spawn(javaPath, args, {
-    cwd: join(constants.DOTLUNARCLIENT, 'offline', version),
+    cwd: join(constants.DOTLUNARCLIENT, 'offline', 'multiver'),
     detached: true,
     shell: debug,
   });
