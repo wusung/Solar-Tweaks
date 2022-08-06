@@ -278,34 +278,23 @@ export async function checkNatives(metadata) {
   const artifact = metadata.launchTypeData.artifacts.find(
     (artifact) => artifact.type === 'NATIVES'
   );
-  if (
-    await fs.exists(
-      join(constants.DOTLUNARCLIENT, 'offline', 'multiver', artifact.name)
-    )
-  ) {
-    if (
-      !(await fs.exists(
-        join(constants.DOTLUNARCLIENT, 'offline', 'multiver', 'natives')
-      ))
-    ) {
-      await extractZip(
-        join(constants.DOTLUNARCLIENT, 'offline', 'multiver', artifact.name),
-        {
-          dir: join(constants.DOTLUNARCLIENT, 'offline', 'multiver', 'natives'),
-        }
-      )
-        .then(() => {
-          logger.debug('Extracted natives');
-        })
-        .catch((error) => {
-          logger.error(`Failed to extract natives`, error);
-        });
-    } else {
-      logger.debug('Natives already extracted');
-    }
-  } else {
-    logger.error('Natives not found, this should not happen');
+  const nativesPath = join(constants.DOTLUNARCLIENT, 'offline', 'multiver', 'natives');
+  if (await fs.exists(nativesPath)) {
+    await fs.rmdir(nativesPath, { recursive: true, force: true });
   }
+  logger.debug('natives=', nativesPath);
+  extractZip(
+    join(constants.DOTLUNARCLIENT, 'offline', 'multiver', artifact.name),
+    {
+      dir: join(constants.DOTLUNARCLIENT, 'offline', 'multiver', 'natives'),
+    }
+  )
+    .then(() => {
+      logger.debug('Extracted natives');
+    })
+    .catch((error) => {
+      logger.error(`Failed to extract natives`, error);
+    });
 }
 
 /**
