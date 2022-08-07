@@ -74,22 +74,22 @@ export default {
     isLaunching: false,
     availableVersions: [
       {
-        version: '1.18',
+        version: '1.18.2',
         background:
           'https://launcherimages.lunarclientcdn.com/versions/1_18.bb8fd4ac31.webp',
       },
       {
-        version: '1.17',
+        version: '1.17.1',
         background:
           'https://launcherimages.lunarclientcdn.com/versions/1_17.1632241780.webp',
       },
       {
-        version: '1.16',
+        version: '1.16.5',
         background:
           'https://launcherimages.lunarclientcdn.com/versions/1_16.47f82f804b.webp',
       },
       {
-        version: '1.12',
+        version: '1.12.2',
         background:
           'https://launcherimages.lunarclientcdn.com/versions/1_12.4d900e6ec3.webp',
       },
@@ -99,7 +99,7 @@ export default {
           'https://launcherimages.lunarclientcdn.com/versions/1_8.1a68214027.webp',
       },
       {
-        version: '1.7',
+        version: '1.7.10',
         background:
           'https://launcherimages.lunarclientcdn.com/versions/1_7.148c077787.webp',
       },

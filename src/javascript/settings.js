@@ -109,12 +109,12 @@ export const defaultSettings = {
   customizations: [],
   version: '1.8.9',
   launchDirectories: [
-    { version: '1.7', path: getDotMinecraftDirectory() },
+    { version: '1.7.10', path: getDotMinecraftDirectory() },
     { version: '1.8.9', path: getDotMinecraftDirectory() },
-    { version: '1.12', path: getDotMinecraftDirectory() },
-    { version: '1.16', path: getDotMinecraftDirectory() },
-    { version: '1.17', path: getDotMinecraftDirectory() },
-    { version: '1.18', path: getDotMinecraftDirectory() },
+    { version: '1.12.2', path: getDotMinecraftDirectory() },
+    { version: '1.16.5', path: getDotMinecraftDirectory() },
+    { version: '1.17.1', path: getDotMinecraftDirectory() },
+    { version: '1.18.2', path: getDotMinecraftDirectory() },
   ],
   ram: 4000,
   resolution: {

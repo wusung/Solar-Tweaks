@@ -10,12 +10,12 @@
         <div id="shortcut-content-version">
           <span>Version: </span>
           <select v-model="version">
-            <option value="1.7">1.7</option>
+            <option selected value="1.7.10">1.7.10</option>
             <option selected value="1.8.9">1.8.9</option>
-            <option value="1.12">1.12</option>
-            <option value="1.16">1.16</option>
-            <option value="1.17">1.17</option>
-            <option value="1.18">1.18</option>
+            <option selected value="1.12.2">1.12.2</option>
+            <option selected value="1.16.5">1.16.5</option>
+            <option selected value="1.17.1">1.17.1</option>
+            <option selected value="1.18.2">1.18.2</option>
           </select>
         </div>
         <div id="shortcut-content-server">
