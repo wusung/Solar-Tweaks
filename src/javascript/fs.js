@@ -8,4 +8,5 @@ export default {
   writeFile: promisify(_fs.writeFile),
   chmod: promisify(_fs.chmod),
   appendFile: promisify(_fs.appendFile),
+  rmdir: promisify(_fs.rmdir),
 };
